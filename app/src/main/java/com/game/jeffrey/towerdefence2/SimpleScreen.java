@@ -14,7 +14,7 @@ public class SimpleScreen extends Screen
     Sound sound;
     Bitmap bitmap;
     Bitmap bob;
-    int clearColor = Color.CYAN;
+    int clearColor = Color.RED;
     Music music;
     boolean isPlaying = false;
     float x = 0;
