@@ -22,9 +22,9 @@ public class SimpleScreen extends Screen
     public SimpleScreen(GameEngine game)
     {
         super(game);
-        sound = game.loadSound("bounce.wav");
-        bob = game.loadBitmap("bob.png");
-        music = game.loadMusic("music.ogg");
+        //sound = game.loadSound("bounce.wav");
+        bob = game.loadBitmap("alex.jpg");
+        //music = game.loadMusic("music.ogg");
     }
 
     @Override
