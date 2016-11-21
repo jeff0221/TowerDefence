@@ -2,6 +2,7 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.game.jeffrey.towerdefence2.GameEngine;
 import com.game.jeffrey.towerdefence2.Screen;
@@ -24,6 +25,7 @@ public class MainMenuScreen extends Screen
     {
         if(game.isTouchDown(0))
         {
+            Log.d("mms", "click");
             game.setScreen(new GameScreen(game));
             return;
         }
