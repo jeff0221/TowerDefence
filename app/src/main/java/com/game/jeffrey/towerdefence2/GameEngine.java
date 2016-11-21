@@ -489,6 +489,7 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         mainLoopThread.start();
         synchronized (stateChanges)
         {
+            stateChanges.clear();
             stateChanges.add(stateChanges.size(),state.Resumed);
         }
     }
