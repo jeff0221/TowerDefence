@@ -9,4 +9,5 @@ public class World
     public static float MAX_Y = 511;
 
     // RESOLUTION: 512 x 288 (16:9)
+
 }
