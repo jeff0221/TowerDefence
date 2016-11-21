@@ -88,11 +88,11 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
 
         if(testScreenOrientation == 2)
         {
-            setOffscreenSurface(480,320);
+            setOffscreenSurface(512,288);
         }
         else
         {
-            setOffscreenSurface(320,480);
+            setOffscreenSurface(288,512);
         }
         surfaceView.setFocusable(true);
         surfaceView.requestFocus();

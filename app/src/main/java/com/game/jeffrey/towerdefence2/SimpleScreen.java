@@ -13,7 +13,7 @@ public class SimpleScreen extends Screen
 
     Sound sound;
     Bitmap bitmap;
-    Bitmap bob;
+    Bitmap background;
     int clearColor = Color.RED;
     Music music;
     boolean isPlaying = false;
@@ -23,7 +23,7 @@ public class SimpleScreen extends Screen
     {
         super(game);
         //sound = game.loadSound("bounce.wav");
-        bob = game.loadBitmap("alex.jpg");
+        background = game.loadBitmap("blackfriday.png");
         //music = game.loadMusic("music.ogg");
     }
 
@@ -37,7 +37,9 @@ public class SimpleScreen extends Screen
         if(game.isTouchDown(0)) x = x + 250 * deltaTime;
         if((game.getFramebufferWidth()/2) < x) x = 0;
 
-        game.drawBitmap(bob, (int) x - 120,0);
+        game.drawBitmap(background, 0, 0);
+
+        //game.drawBitmap(bob, (int) x - 120,0);
 
 
         /*if(game.isTouchDown(0))
@@ -69,6 +71,7 @@ public class SimpleScreen extends Screen
         y = (y/10) * game.getFramebufferHeight()/2 + game.getFramebufferHeight()/2;
         game.drawBitmap(bob,(int)(x-64),(int)(y-64));*/
 
+        /*
         for(int i = 0; i< 20;i++)
         {
             if(game.isTouchDown(i))
@@ -76,6 +79,7 @@ public class SimpleScreen extends Screen
             game.drawBitmap(bob,game.getTouchX(i),game.getTouchY(i));
             }
         }
+        */
     }
     /*
     if (game.isKeyPressed(KeyEvent.KEYCODE_VOLUME_DOWN))
