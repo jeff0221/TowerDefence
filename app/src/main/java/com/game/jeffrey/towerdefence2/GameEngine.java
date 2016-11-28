@@ -234,6 +234,14 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         }
     }
 
+    public void drawBitmap(Bitmap bitmap, Rect src, Rect dest) {
+        if (canvas == null) {
+            return;
+        }
+
+        canvas.drawBitmap(bitmap, src, dest, null);
+    }
+
     public void drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight)
     {
         if(canvas == null)
