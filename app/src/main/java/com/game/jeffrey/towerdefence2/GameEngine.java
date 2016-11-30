@@ -22,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class GameEngine extends Activity implements Runnable, View.OnKeyListener, SensorEventListener, OnLongClickListener
+public abstract class GameEngine extends Activity implements Runnable, View.OnKeyListener, SensorEventListener
 {
     private Thread mainLoopThread;
     protected State state = State.Paused;
