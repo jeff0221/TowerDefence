@@ -2,6 +2,7 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class World
     public static int viewX = 0;
     public static int viewY = 0;
 
+    Tower tower = new Tower();
+
     // RESOLUTION: 640 x 360 (16:9)
 
     public static void generateGrid() {
@@ -32,6 +35,15 @@ public class World
             {
                 grid.add(new Square(x, y, gridSize));
             }
+        }
+    }
+
+    public void update(float deltaTime, float touchX, float touchY, boolean isTouch)
+    {
+        if (isTouch)
+        {
+            tower.x = touchX - tower.WIDTH/2;
+            tower.y = touchY - tower.HEIGHT/2;
         }
     }
 }

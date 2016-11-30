@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.game.jeffrey.towerdefence2.BFTD.Tower;
+
 import java.util.List;
 
 
@@ -14,10 +16,13 @@ public class SimpleScreen extends Screen
     Sound sound;
     Bitmap bitmap;
     Bitmap background;
+    Bitmap towerImage;
     int clearColor = Color.RED;
     Music music;
     boolean isPlaying = false;
     float x = 0;
+
+    Tower tower = new Tower();
 
     public SimpleScreen(GameEngine game)
     {
@@ -25,6 +30,7 @@ public class SimpleScreen extends Screen
         //sound = game.loadSound("bounce.wav");
         background = game.loadBitmap("blackfriday.png");
         //music = game.loadMusic("music.ogg");
+        towerImage = game.loadBitmap("test_tower.png");
     }
 
     @Override
@@ -37,7 +43,14 @@ public class SimpleScreen extends Screen
         if(game.isTouchDown(0)) x = x + 250 * deltaTime;
         if((game.getFramebufferWidth()/2) < x) x = 0;
 
-        game.drawBitmap(background, 0, 0);
+        if (game.isTouchDown(0))
+        {
+            tower.x = game.getTouchX(0) - tower.WIDTH/2;
+            tower.y = game.getTouchY(0) - tower.HEIGHT/2;
+        }
+
+        game.drawBitmap(towerImage, (int)tower.x, (int)tower.y);
+
 
         //game.drawBitmap(bob, (int) x - 120,0);
 

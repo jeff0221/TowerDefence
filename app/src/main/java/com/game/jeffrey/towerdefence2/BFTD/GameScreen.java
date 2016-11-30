@@ -5,8 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.game.jeffrey.towerdefence2.GameEngine;
+import com.game.jeffrey.towerdefence2.MultiTouchHandler;
+import com.game.jeffrey.towerdefence2.R;
 import com.game.jeffrey.towerdefence2.Screen;
 
 public class GameScreen extends Screen
@@ -33,12 +38,14 @@ public class GameScreen extends Screen
     int diffX = 0;
     int diffY = 0;
 
+
     public GameScreen(GameEngine game)
     {
         super(game);
         squareGFX = game.loadBitmap("square.png");
         src = new Rect(0, 0, squareGFX.getWidth()-1, squareGFX.getHeight()-1);
         World.generateGrid();
+        renderer = new WorldRenderer(game, world);
     }
 
     @Override
@@ -67,7 +74,6 @@ public class GameScreen extends Screen
             touched = false;
         }
 
-
         Square square = null;
         int squareMax = world.grid.size();
         int curX;
@@ -85,6 +91,10 @@ public class GameScreen extends Screen
                 game.drawBitmap(squareGFX, src, square.getRect());
             }
         }
+
+        renderer.render();
+        world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0));
+
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.game.jeffrey.towerdefence2.BFTD;
 
+import android.view.View;
+
 import com.game.jeffrey.towerdefence2.GameEngine;
 import com.game.jeffrey.towerdefence2.Screen;
 
@@ -24,4 +26,5 @@ public class BlackFriday extends GameEngine
         super.onResume();
         //this.music.play();
     }
+
 }

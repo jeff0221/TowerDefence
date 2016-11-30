@@ -1,6 +1,8 @@
 package com.game.jeffrey.towerdefence2;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -22,15 +24,18 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class GameEngine extends Activity implements Runnable, View.OnKeyListener, SensorEventListener
+public abstract class GameEngine extends Activity implements Runnable, View.OnKeyListener, SensorEventListener, OnLongClickListener
 {
     private Thread mainLoopThread;
     protected State state = State.Paused;
@@ -65,7 +70,6 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
     private int framesPerSecond = 0;
 
     Paint paint = new Paint();
-
 
     //********* Variables above and methods below *********
 
@@ -289,6 +293,18 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
             }
         }
         return false;
+    }
+
+    public boolean onLongClick(View view)
+    {
+        ClipData.Item item = new ClipData.Item((CharSequence)view.getTag());
+        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+        ClipData date = new ClipData(view.getTag().toString(), mimeTypes, item);
+        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+        view.startDrag(date, shadowBuilder, view, 0);
+
+        view.setVisibility(View.INVISIBLE);
+        return true;
     }
 
     public boolean isKeyPressed(int keyCode)
