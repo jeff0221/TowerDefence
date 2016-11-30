@@ -1,7 +1,5 @@
 package com.game.jeffrey.towerdefence2.BFTD;
 
-import android.view.View;
-
 import com.game.jeffrey.towerdefence2.GameEngine;
 import com.game.jeffrey.towerdefence2.Screen;
 
