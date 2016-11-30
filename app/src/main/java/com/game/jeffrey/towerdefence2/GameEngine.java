@@ -1,8 +1,6 @@
 package com.game.jeffrey.towerdefence2;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -24,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
@@ -293,18 +290,6 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
             }
         }
         return false;
-    }
-
-    public boolean onLongClick(View view)
-    {
-        ClipData.Item item = new ClipData.Item((CharSequence)view.getTag());
-        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-        ClipData date = new ClipData(view.getTag().toString(), mimeTypes, item);
-        DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-        view.startDrag(date, shadowBuilder, view, 0);
-
-        view.setVisibility(View.INVISIBLE);
-        return true;
     }
 
     public boolean isKeyPressed(int keyCode)
