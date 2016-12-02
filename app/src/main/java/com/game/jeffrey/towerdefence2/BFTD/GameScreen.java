@@ -45,6 +45,7 @@ public class GameScreen extends Screen
         squareGFX = game.loadBitmap("square.png");
         src = new Rect(0, 0, squareGFX.getWidth()-1, squareGFX.getHeight()-1);
         World.generateGrid();
+        world = new World();
         renderer = new WorldRenderer(game, world);
     }
 

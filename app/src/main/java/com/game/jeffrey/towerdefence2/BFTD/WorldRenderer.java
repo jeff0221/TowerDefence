@@ -23,6 +23,9 @@ public class WorldRenderer
     public void render()
     {
         Log.d("mms", "Load");
+        Log.d("XXX" + world.tower.x,"XXX");
+        Log.d("YYY" + world.tower.y,"YYY");
+
         game.drawBitmap(towerImage, (int)world.tower.x, (int)world.tower.y);
     }
 }

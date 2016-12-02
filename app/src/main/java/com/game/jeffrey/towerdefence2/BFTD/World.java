@@ -42,8 +42,8 @@ public class World
     {
         if (isTouch)
         {
-            tower.x = touchX - tower.WIDTH/2;
-            tower.y = touchY - tower.HEIGHT/2;
+            tower.x = touchX - Tower.WIDTH/2;
+            tower.y = touchY - Tower.HEIGHT/2;
         }
     }
 }
