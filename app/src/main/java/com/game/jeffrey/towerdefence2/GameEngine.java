@@ -301,6 +301,26 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         return touchHandler.isTouchDown(pointer);
     }
 
+    public boolean isDoubleTouchDown()
+    {
+        boolean result = false;
+
+        int amountOfTouch = 0;
+        for(int i = 0; i < touchEvents.size(); i++){
+            if(touchEvents.get(i)!=null){
+            amountOfTouch++;
+            }
+        }
+
+        if(amountOfTouch > 1){
+            result = true;
+        }else{
+            result = false;
+        }
+
+        return result;
+    }
+
     public int getTouchX(int pointer)
     {
         return (int)(touchHandler.getTouchX(pointer) / (float) surfaceView.getWidth() * offscreenSurface.getWidth());

@@ -54,7 +54,7 @@ public class GameScreen extends Screen
     {
         game.clearFramebuffer(Color.rgb(0, 0, 0));
 
-        if(game.isTouchDown(0))
+        if(game.isDoubleTouchDown()) //midlertidigt aendret fra at være istouchdown() til at være isdoubletouchdown()
         {
             if (!touched) {
                 touched = true;
