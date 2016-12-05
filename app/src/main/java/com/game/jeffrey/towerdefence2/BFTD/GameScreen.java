@@ -54,7 +54,7 @@ public class GameScreen extends Screen
     {
         game.clearFramebuffer(Color.rgb(0, 0, 0));
 
-        if(game.isDoubleTouchDown()) //midlertidigt aendret fra at være istouchdown() til at være isdoubletouchdown()
+        if(game.isDoubleTouchDown())
         {
             if (!touched) {
                 touched = true;
@@ -70,7 +70,7 @@ public class GameScreen extends Screen
             World.viewX = diffX;
             World.viewY = diffY;
 
-            Log.d("world", "x: " + diffX + ", y: " + diffY);
+            //Log.d("world", "x: " + diffX + ", y: " + diffY);
         } else {
             touched = false;
         }
@@ -94,7 +94,7 @@ public class GameScreen extends Screen
         }
 
         renderer.render();
-        world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0));
+        world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0), game.isDoubleTouchDown());
 
     }
 

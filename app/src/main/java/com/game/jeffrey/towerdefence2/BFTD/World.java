@@ -24,7 +24,10 @@ public class World
     public static int viewX = 0;
     public static int viewY = 0;
 
+
     Tower tower = new Tower();
+
+    List<Tower> towers = new ArrayList<>();
 
     // RESOLUTION: 640 x 360 (16:9)
 
@@ -37,13 +40,59 @@ public class World
             }
         }
     }
-
-    public void update(float deltaTime, float touchX, float touchY, boolean isTouch)
+    public void generateRandomTowers()
     {
-        if (isTouch)
+        for(int i = 0; i < 5 ;i++){
+            towers.add(new Tower(i+5,(i*10)+50));
+        }
+    }
+
+    public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch)
+    {
+        if(towers.isEmpty()){
+            generateRandomTowers();
+        }
+
+        if(isTouch && !isDoubleTouch)
         {
             tower.x = touchX - Tower.WIDTH/2;
             tower.y = touchY - Tower.HEIGHT/2;
+
+            //towers array
+
+            Tower contextTower = pickTower(touchX,touchY);
+                if(contextTower != null)
+                {
+                    contextTower.x = touchX - Tower.WIDTH/2;
+                    contextTower.y = touchY - Tower.HEIGHT/2;
+                }
         }
+    }
+
+    public Tower pickTower(float touchX, float touchY)
+    {
+        for(int i = 0; i < towers.size();i++)
+        {
+            Tower contextTower = towers.get(i);
+            if(towerCollider(touchX,touchY,contextTower))
+            {
+                return contextTower;
+            }
+        }
+    return null;
+    }
+
+    public boolean towerCollider(float touchX, float touchY, Tower tower)
+    {
+        boolean result = false;
+        if(tower.x == touchX || touchX > tower.x && touchX < tower.x + Tower.WIDTH)
+        {
+            if(tower.y == touchY || touchY > tower.y && touchY < tower.y + Tower.HEIGHT)
+            {
+            result = true;
+
+            }
+        }
+        return result;
     }
 }

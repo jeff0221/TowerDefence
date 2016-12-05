@@ -22,10 +22,15 @@ public class WorldRenderer
 
     public void render()
     {
-        Log.d("mms", "Load");
-        Log.d("XXX" + world.tower.x,"XXX");
-        Log.d("YYY" + world.tower.y,"YYY");
+//        Log.d("mms", "Load");
+//        Log.d("XXX" + world.tower.x,"XXX");
+//        Log.d("YYY" + world.tower.y,"YYY");
 
-        game.drawBitmap(towerImage, (int)world.tower.x, (int)world.tower.y);
+        //game.drawBitmap(towerImage, (int)world.tower.x, (int)world.tower.y);
+
+        for(int i = 0; i < world.towers.size();i++)
+        {
+            game.drawBitmap(towerImage, (int)world.towers.get(i).x, (int)world.towers.get(i).y);
+        }
     }
 }

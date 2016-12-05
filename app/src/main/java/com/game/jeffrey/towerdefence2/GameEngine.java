@@ -478,6 +478,7 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
                 frames = 0;
                 startTime = System.nanoTime();
             }
+            Log.d("Framerate: ","" + framesPerSecond);
         }//end of while loop
     }//end of run() method
 

@@ -7,5 +7,13 @@ public class Tower
     public float x = 180 - WIDTH*2;
     public float y = World.MAX_Y - 2*HEIGHT;
 
+    public Tower(){}
+    public Tower(float x, float y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+
 
 }
