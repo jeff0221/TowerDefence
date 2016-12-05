@@ -303,6 +303,7 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
 
     public boolean isDoubleTouchDown()
     {
+        Log.d("game", "touches: " + touchEvents);
         boolean result = false;
 
         int amountOfTouch = 0;
@@ -478,7 +479,7 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
                 frames = 0;
                 startTime = System.nanoTime();
             }
-            Log.d("Framerate: ","" + framesPerSecond);
+            //Log.d("Framerate: ","" + framesPerSecond);
         }//end of while loop
     }//end of run() method
 
