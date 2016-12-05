@@ -312,7 +312,7 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
             }
         }
 
-        if(amountOfTouch > 1){
+        if(amountOfTouch == 2){
             result = true;
         }else{
             result = false;
