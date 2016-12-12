@@ -44,7 +44,6 @@ public class GameScreen extends Screen
         super(game);
         squareGFX = game.loadBitmap("square.png");
         src = new Rect(0, 0, squareGFX.getWidth()-1, squareGFX.getHeight()-1);
-        World.generateGrid();
         world = new World();
         renderer = new WorldRenderer(game, world);
     }
@@ -52,8 +51,8 @@ public class GameScreen extends Screen
     @Override
     public void update(float deltaTime)
     {
+        /*
         game.clearFramebuffer(Color.rgb(0, 0, 0));
-
         if(game.isDoubleTouchDown())
         {
             if (!touched) {
@@ -66,7 +65,6 @@ public class GameScreen extends Screen
                 diffX = game.getTouchX(0) - startX;
                 diffY = game.getTouchY(0) - startY;
             }
-
             World.viewX = diffX;
             World.viewY = diffY;
 
@@ -74,7 +72,6 @@ public class GameScreen extends Screen
         } else {
             touched = false;
         }
-
         Square square = null;
         int squareMax = world.grid.size();
         int curX;
@@ -92,10 +89,11 @@ public class GameScreen extends Screen
                 game.drawBitmap(squareGFX, src, square.getRect());
             }
         }
+        */
+
 
         renderer.render();
         world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0), game.isDoubleTouchDown());
-
     }
 
     @Override

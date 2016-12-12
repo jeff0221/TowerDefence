@@ -303,19 +303,24 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
 
     public boolean isDoubleTouchDown()
     {
-        Log.d("game", "touches: " + touchEvents);
+        //Log.d("game", "touches: " + touchEvents);
         boolean result = false;
 
         int amountOfTouch = 0;
-        for(int i = 0; i < touchEvents.size(); i++){
-            if(touchEvents.get(i)!=null){
+        for(int i = 0; i < touchEvents.size(); i++)
+        {
+            if(touchEvents.get(i)!=null)
+            {
             amountOfTouch++;
             }
         }
 
-        if(amountOfTouch == 2){
+        if(amountOfTouch == 2)
+        {
             result = true;
-        }else{
+        }
+        else
+        {
             result = false;
         }
 

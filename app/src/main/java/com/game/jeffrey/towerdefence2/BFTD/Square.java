@@ -1,16 +1,14 @@
 package com.game.jeffrey.towerdefence2.BFTD;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Log;
 
 /**
  * Created by Hans on 21-11-2016.
  */
-public class Square
+public class Square implements ItemEntity
 {
-    private int x;
-    private int y;
+    public int x;
+    public int y;
     private int dispX;
     private int dispY;
     private int size;
@@ -18,6 +16,9 @@ public class Square
 
     private int viewX = 0;
     private int viewY = 0;
+
+    public ItemEntity.typeOfItem type = typeOfItem.Tower;
+
 
     public Square(int x, int y, int size) {
         this.x = x;
@@ -36,6 +37,16 @@ public class Square
     public int getY()
     {
         return y;
+    }
+
+    public void setX(int x)
+    {
+        this.x = x;
+    }
+
+    public void setY(int y)
+    {
+        this.y = y;
     }
 
     public int getSize()
