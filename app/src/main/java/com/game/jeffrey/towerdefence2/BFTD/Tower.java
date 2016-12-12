@@ -1,17 +1,17 @@
 package com.game.jeffrey.towerdefence2.BFTD;
 
-public class Tower
+public class Tower extends ItemEntity
 {
     public static float WIDTH = 50;
     public static float HEIGHT = 33;
-    public float x = 180 - WIDTH*2;
-    public float y = World.MAX_Y - 2*HEIGHT;
 
-    public Tower(){}
+    public ItemEntity.typeOfItem type = typeOfItem.Tower;
+
     public Tower(float x, float y)
     {
-        this.x = x;
-        this.y = y;
+        super(x,y);
+
+        super.type = typeOfItem.Tower;
     }
 
 

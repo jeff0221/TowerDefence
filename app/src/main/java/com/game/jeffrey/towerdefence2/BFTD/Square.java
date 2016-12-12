@@ -5,7 +5,7 @@ import android.graphics.Rect;
 /**
  * Created by Hans on 21-11-2016.
  */
-public class Square implements ItemEntity
+public class Square extends ItemEntity
 {
     public int x;
     public int y;
@@ -19,13 +19,13 @@ public class Square implements ItemEntity
 
     public ItemEntity.typeOfItem type = typeOfItem.Tower;
 
-
-    public Square(int x, int y, int size) {
-        this.x = x;
-        this.y = y;
-        this.dispX = x * size;
-        this.dispY = y * size;
-        this.size = size;
+    public Square(float x, float y)
+    {
+        super(x,y);
+        this.type = typeOfItem.Tower;
+        this.size = 30;
+        this.dispX = (int)x * size;
+        this.dispY = (int)y * size;
         this.rect = new Rect(dispX, dispY, dispX + size, dispY + size);
     }
 

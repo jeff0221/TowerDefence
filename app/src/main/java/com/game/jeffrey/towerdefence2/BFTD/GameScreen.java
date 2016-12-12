@@ -93,7 +93,7 @@ public class GameScreen extends Screen
 
 
         renderer.render();
-        world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0), game.isDoubleTouchDown());
+        world.update(deltaTime, game.getTouchX(0), game.getTouchY(0), game.isTouchDown(0), game.isDoubleTouchDown(),game.isTapped());
     }
 
     @Override

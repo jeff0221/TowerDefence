@@ -22,7 +22,7 @@ public class SimpleScreen extends Screen
     boolean isPlaying = false;
     float x = 0;
 
-    Tower tower = new Tower();
+
 
     public SimpleScreen(GameEngine game)
     {
@@ -43,13 +43,7 @@ public class SimpleScreen extends Screen
         if(game.isTouchDown(0)) x = x + 250 * deltaTime;
         if((game.getFramebufferWidth()/2) < x) x = 0;
 
-        if (game.isTouchDown(0))
-        {
-            tower.x = game.getTouchX(0) - tower.WIDTH/2;
-            tower.y = game.getTouchY(0) - tower.HEIGHT/2;
-        }
 
-        game.drawBitmap(towerImage, (int)tower.x, (int)tower.y);
 
 
         //game.drawBitmap(bob, (int) x - 120,0);

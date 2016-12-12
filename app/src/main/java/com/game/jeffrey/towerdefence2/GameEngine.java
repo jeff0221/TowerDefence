@@ -327,6 +327,20 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         return result;
     }
 
+    public boolean isTapped()
+    {
+        boolean result = false;
+        for(int i = 0; i < getTouchEvents().size();i++)
+        {
+            if(getTouchEvents().get(i).type == TouchEvent.TouchEventType.Up)
+            {
+                return true;
+            }
+        }
+
+        return result;
+    }
+
     public int getTouchX(int pointer)
     {
         return (int)(touchHandler.getTouchX(pointer) / (float) surfaceView.getWidth() * offscreenSurface.getWidth());
