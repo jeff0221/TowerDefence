@@ -83,11 +83,11 @@ public class WorldRenderer
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.Employee)
                 {
-                    renderSquare(imagePosX,imagePosY);
+                    renderGround(imagePosX,imagePosY);
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.Ground)
                 {
-                    renderSquare(imagePosX,imagePosY);
+                    renderGround(imagePosX,imagePosY);
                 }
 
 
@@ -148,7 +148,7 @@ public class WorldRenderer
     {
         game.drawBitmap(wallImage,x,y,0,0,30,30);
     }
-    public void renderSquare(int x, int y)
+    public void renderGround(int x, int y)
     {
         game.drawBitmap(squareGFX,x,y,0,0,30,30);
     }

@@ -29,11 +29,8 @@ public class MainMenuScreen extends Screen
             game.setScreen(new GameScreen(game));
             return;
         }
-
         passedTime = passedTime + deltaTime;
         game.drawBitmap(mainmenu,0,0);
-
-
     }
 
     @Override
