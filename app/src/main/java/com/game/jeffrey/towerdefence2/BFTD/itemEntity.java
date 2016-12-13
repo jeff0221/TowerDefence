@@ -9,10 +9,12 @@ public abstract class ItemEntity
         Tower,
         Wall,
         Employee,
-        Ground
+        Ground,
+        StartPoint,
+        GoalPoint
     }
 
-    public typeOfItem type = typeOfItem.Employee;
+    public typeOfItem type = typeOfItem.Ground;
     public float x;
     public float y;
     public int arrayX = 100;
@@ -22,7 +24,6 @@ public abstract class ItemEntity
     {
         this.x = x;
         this.y = y;
-
     }
 
 }

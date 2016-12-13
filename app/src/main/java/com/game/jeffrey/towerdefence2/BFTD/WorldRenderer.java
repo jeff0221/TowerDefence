@@ -38,12 +38,9 @@ public class WorldRenderer
         renderWorld();
 
         //third
-
         renderBottomMenu();
 
         renderDraggedItem();
-
-
     }
 
     public void deprecatedRenderTowers()
@@ -72,8 +69,8 @@ public class WorldRenderer
 
                 int imagePosX = (int)world.worldMap.viewX + posX;
                 int imagePosY = (int)world.worldMap.viewY + posY;
-
-                if(itemContext.type == ItemEntity.typeOfItem.Tower) //if the square at said grid is something it should draw something specific
+                //if the square at said grid is something it should draw something specific
+                if(itemContext.type == ItemEntity.typeOfItem.Tower)
                 {
                     renderTower(imagePosX,imagePosY);
                 }
@@ -89,6 +86,7 @@ public class WorldRenderer
                 {
                     renderGround(imagePosX,imagePosY);
                 }
+
 
 
                 if(world.highLighted != null && itemContext.arrayY == world.highLighted.arrayY &&
