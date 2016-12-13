@@ -26,12 +26,7 @@ public class World
 
     public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch,boolean isTapped)
     {
-        if(towers.isEmpty())
-        {
-            //generateRandomTowers();
-        }
-
-        dragAndDropItem(touchX,touchY,isTouch,isTapped);
+        dragAndDropMenuItem(touchX,touchY,isTouch,isTapped);
 
         if(touchY < BottomMenu.MIN_Y)
         {
@@ -151,7 +146,7 @@ public class World
         }
     }
 
-    public void dragAndDropItem(float touchX, float touchY, boolean isTouch, boolean tapped)
+    public void dragAndDropMenuItem(float touchX, float touchY, boolean isTouch, boolean tapped)
     {
         //Calculates drag and drop
         if(bottomMenu.selectedItem != null)
