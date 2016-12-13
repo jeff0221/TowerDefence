@@ -14,7 +14,7 @@ public class Wall extends ItemEntity
     {
         super(x,y);
 
-        this.type = typeOfItem.Wall;
+        super.type = typeOfItem.Wall;
     }
 
 

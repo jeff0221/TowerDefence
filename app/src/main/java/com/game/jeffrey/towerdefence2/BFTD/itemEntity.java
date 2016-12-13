@@ -2,18 +2,21 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 public abstract class ItemEntity
 {
+    public static float WIDTH = 50;
+    public static float HEIGHT = 33;
     enum typeOfItem
     {
         Tower,
         Wall,
-        Employee
+        Employee,
+        Ground
     }
 
-    public typeOfItem type;
+    public typeOfItem type = typeOfItem.Employee;
     public float x;
     public float y;
-    public int arrayX;
-    public int arrayY;
+    public int arrayX = 100;
+    public int arrayY = 100;
 
     public ItemEntity(float x, float y)
     {
@@ -21,4 +24,5 @@ public abstract class ItemEntity
         this.y = y;
 
     }
+
 }

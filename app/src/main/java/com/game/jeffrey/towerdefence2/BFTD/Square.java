@@ -7,8 +7,7 @@ import android.graphics.Rect;
  */
 public class Square extends ItemEntity
 {
-    public int x;
-    public int y;
+
     private int dispX;
     private int dispY;
     private int size;
@@ -17,27 +16,18 @@ public class Square extends ItemEntity
     private int viewX = 0;
     private int viewY = 0;
 
-    public ItemEntity.typeOfItem type = typeOfItem.Tower;
+    public ItemEntity.typeOfItem type = typeOfItem.Ground;
 
     public Square(float x, float y)
     {
         super(x,y);
-        this.type = typeOfItem.Tower;
+        super.type = typeOfItem.Ground;
         this.size = 30;
         this.dispX = (int)x * size;
         this.dispY = (int)y * size;
         this.rect = new Rect(dispX, dispY, dispX + size, dispY + size);
     }
 
-    public int getX()
-    {
-        return x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
 
     public void setX(int x)
     {

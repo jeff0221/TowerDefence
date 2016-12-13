@@ -11,6 +11,8 @@ public class BottomMenu
     public static float MAX_Y = 639;
     public static float MIN_Y = MAX_Y - 50;
 
+    public boolean itemTouched = false;
+
     public ItemEntity selectedItem;
 
 }

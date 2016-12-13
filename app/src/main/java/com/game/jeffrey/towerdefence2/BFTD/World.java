@@ -20,18 +20,9 @@ public class World
 
     List<Tower> towers = new ArrayList<>();
 
-    public boolean draggingItem = false;
+    ItemEntity highLighted;
 
     // RESOLUTION: 640 x 360 (16:9)
-
-
-    public void generateRandomTowers()
-    {
-        for(int i = 0; i < 5 ;i++)
-        {
-            //towers.add(new Tower(i+5,(i*10)+50));
-        }
-    }
 
     public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch,boolean isTapped)
     {
@@ -40,22 +31,14 @@ public class World
             //generateRandomTowers();
         }
 
+        dragAndDropItem(touchX,touchY,isTouch,isTapped);
+
         if(touchY < BottomMenu.MIN_Y)
         {
-
-            if(isTouch) //if the player touches the game elements and not the menu
+            if(!bottomMenu.itemTouched)
             {
-                //finds tower on screen
-                Tower contextTower = pickTower(touchX,touchY);
-                if(contextTower != null)
-                {
-                    contextTower.x = touchX - Tower.WIDTH/2;
-                    contextTower.y = touchY - Tower.HEIGHT/2;
-                }
-                //calculates world view changes
+                moveWorldView(touchX,touchY,isTouch);
             }
-            moveWorldView(touchX,touchY,isTouch);
-            dragAndDropItem(touchX,touchY,isTouch,isTapped);
         }
         else if(touchY > BottomMenu.MIN_Y)
         {
@@ -63,14 +46,15 @@ public class World
         }
     }
 
-    public ItemEntity pickEntity(float touchX, float touchY)
+    public ItemEntity pickEntity(float touchX, float touchY, boolean isTouch, boolean tapped)
     {
-        for(int x = 0; x < worldMap.gridWidth-1;x++)
+        if(isTouch || tapped)
         {
-            for(int y = 0; y < worldMap.gridHeight-1;y++)
+        for(int x = 0; x < worldMap.gridWidth;x++)
+        {
+            for(int y = 0; y < worldMap.gridHeight;y++)
             {
                 ItemEntity contextEntity = worldMap.grid[x][y];
-
                 if(contextEntity.x == touchX || touchX > contextEntity.x && touchX < contextEntity.x + 30)
                 {
                     if(contextEntity.y == touchY || touchY > contextEntity.y && touchY < contextEntity.y + 30)
@@ -80,7 +64,8 @@ public class World
                 }
             }
         }
-        return null;
+        }
+        return bottomMenu.selectedItem;
     }
 
     public Tower pickTower(float touchX, float touchY)
@@ -113,13 +98,13 @@ public class World
     public void moveWorldView(float touchX, float touchY, boolean isTouch)
     {
         //https://yal.cc/gamemaker-click-n-drag-to-pan-view/ guide used
-        if(isTouch && pickTower(touchX,touchY) == null)
+        if(isTouch)
         {
             if(!worldMap.touched)
             {
                 worldMap.touched = true;
-            worldMap.startX = touchX;
-            worldMap.startY = touchY;
+                worldMap.startX = touchX;
+                worldMap.startY = touchY;
             }
 
             if(worldMap.touched)
@@ -162,32 +147,58 @@ public class World
                 Log.d("Button 3","Pressed");
             }
             }
+
         }
     }
 
     public void dragAndDropItem(float touchX, float touchY, boolean isTouch, boolean tapped)
     {
-        if(bottomMenu.selectedItem != null && isTouch)
+        //Calculates drag and drop
+        if(bottomMenu.selectedItem != null)
         {
-            if(!draggingItem && touchX > 275 && touchX < 360)
+            if(isTouch)
             {
-                bottomMenu.selectedItem.x = touchX;
-                bottomMenu.selectedItem.y = touchY;
-                draggingItem = true;
+                if(!bottomMenu.itemTouched && touchX > 280 && touchY > 595)
+                {
+                    bottomMenu.selectedItem.x = touchX;
+                    bottomMenu.selectedItem.y = touchY;
+                    bottomMenu.itemTouched = true;
+                }
+                else if(bottomMenu.itemTouched)
+                {
+                    bottomMenu.selectedItem.x = touchX;
+                    bottomMenu.selectedItem.y = touchY;
+                    highLighted = pickEntity(touchX,touchY,isTouch,tapped);
+                }
             }
-            bottomMenu.selectedItem.x = touchX;
-            bottomMenu.selectedItem.y = touchY;
+            else
+            {
+                if(tapped && bottomMenu.itemTouched && (touchX < 280 && touchY < 595))
+                {
+                    ItemEntity contextEntity = highLighted;
+
+                    bottomMenu.selectedItem.arrayX = contextEntity.arrayX;
+                    bottomMenu.selectedItem.arrayY = contextEntity.arrayY;
+
+                    worldMap.grid[contextEntity.arrayX][contextEntity.arrayY] = bottomMenu.selectedItem;
+
+                    Log.d(contextEntity.type + " replaced by",bottomMenu.selectedItem.type+"");
+
+                    bottomMenu.selectedItem = null;
+                    bottomMenu.itemTouched = false;
+                }
+                else
+                {
+                    bottomMenu.itemTouched = false;
+                    bottomMenu.selectedItem.x = 280;
+                    bottomMenu.selectedItem.y = 595;
+                }
+            }
         }
-        else
+
+        if(!bottomMenu.itemTouched)
         {
-            draggingItem = false;
-
-            ItemEntity item = pickEntity(touchX,touchY);
-            if(item != null && tapped)
-            {
-                worldMap.grid[item.arrayX][item.arrayX] = bottomMenu.selectedItem;
-            }
-
+            highLighted = null;
         }
     }
 }
