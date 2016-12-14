@@ -66,7 +66,7 @@ public class World
 
         if(testCounter %10 == 0)
         {
-            calculateCustomer();
+            calculateCustomer(deltaTime);
         }
 
 
@@ -246,7 +246,7 @@ public class World
         }
     }
 
-    public void calculateCustomer()
+    public void calculateCustomer(float deltaTime)
     {
         if(!testCustomer.spawned)
         {
@@ -260,6 +260,8 @@ public class World
         {
             testCustomer.pathProgression = 0;
         }
+
+        int constant = 1;
 
         testCustomer.x = path.getPath().get(testCustomer.pathProgression).x;
         testCustomer.y = path.getPath().get(testCustomer.pathProgression).y;
