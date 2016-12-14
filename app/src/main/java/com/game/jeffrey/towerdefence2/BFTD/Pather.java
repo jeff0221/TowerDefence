@@ -23,6 +23,9 @@ public class Pather
     private boolean foundExit = false;
 
     public void calculatePath(WorldMap map) {
+        path.clear();
+        visited.clear();
+        next.clear();
         this.map = map;
         foundExit = false;
 
