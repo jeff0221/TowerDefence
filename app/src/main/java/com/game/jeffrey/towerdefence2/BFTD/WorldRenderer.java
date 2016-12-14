@@ -156,14 +156,22 @@ public class WorldRenderer
         if (world.aimRotation >= 270 && world.aimRotation < 360)
         {
             pictureSpaceY = 90;
+            //System.out.println("UP " + pictureSpaceY);
         }
         else if(world.aimRotation >= 180 && world.aimRotation < 270)
         {
             pictureSpaceY = 60;
+            //System.out.println("RIGHT " + pictureSpaceY);
         }
         else if(world.aimRotation >= 90 && world.aimRotation < 180)
         {
             pictureSpaceY = 0;
+            //System.out.println("DOWN " + pictureSpaceY);
+        }
+        else if(world.aimRotation >= 0 && world.aimRotation < 90)
+        {
+            pictureSpaceY = 30;
+            //System.out.println("LEFT " + pictureSpaceY);
         }
 
         game.drawBitmap(towerAimImage,x,y,pictureSpaceX,pictureSpaceY,30,30);
