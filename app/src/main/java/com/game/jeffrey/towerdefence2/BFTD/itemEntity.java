@@ -4,6 +4,9 @@ public abstract class ItemEntity
 {
     public static float WIDTH = 50;
     public static float HEIGHT = 33;
+
+    public ItemEntity cameFrom;
+
     enum typeOfItem
     {
         Tower,
@@ -26,4 +29,9 @@ public abstract class ItemEntity
         this.y = y;
     }
 
+    /*
+    public String toString() {
+        return "x: " + arrayX + ", y: " + arrayY;
+    }
+    */
 }

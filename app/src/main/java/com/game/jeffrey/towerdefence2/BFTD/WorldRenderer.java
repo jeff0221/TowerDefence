@@ -86,6 +86,10 @@ public class WorldRenderer
                 {
                     renderGround(imagePosX,imagePosY);
                 }
+                else if(itemContext.type == ItemEntity.typeOfItem.StartPoint ||
+                        itemContext.type == ItemEntity.typeOfItem.GoalPoint) {
+                    renderPoints(imagePosX, imagePosY);
+                }
 
 
 
@@ -149,5 +153,8 @@ public class WorldRenderer
     public void renderGround(int x, int y)
     {
         game.drawBitmap(squareGFX,x,y,0,0,30,30);
+    }
+    public void renderPoints(int x, int y) {
+        game.drawBitmap(highlightImage, x, y, 0, 0, 30, 30);
     }
 }

@@ -13,6 +13,14 @@ public class WorldMap
     float viewY = 0;
     boolean touched = false;
 
+
+
+    // PREDEFINED MOVE LATER
+    public int pathStartX = 1;
+    public int pathStartY = 1;
+    public int pathGoalX = 9;
+    public int pathGoalY = 17;
+
     public WorldMap()
     {
         this.grid = new ItemEntity[gridWidth][gridHeight];
@@ -20,6 +28,8 @@ public class WorldMap
     }
 
     public void generateGrid() {
+
+
         ItemEntity itemContext;
 
         for (int y = 0; y < gridHeight; y++)
@@ -36,6 +46,13 @@ public class WorldMap
                 if(x == 0 || x == gridWidth-1)
                 {
                     itemContext = new Wall(x, y);
+                }
+
+                if (x == pathStartX && y == pathStartY) {
+                    itemContext = new StartPoint(x, y);
+                }
+                if (x == pathGoalX && y == pathGoalY) {
+                    itemContext = new EndPoint(x, y);
                 }
 
                 //final array insertion

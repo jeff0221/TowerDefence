@@ -16,6 +16,4 @@ public class Wall extends ItemEntity
 
         super.type = typeOfItem.Wall;
     }
-
-
 }

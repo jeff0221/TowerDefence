@@ -11,8 +11,4 @@ public class TouchEvent
     public int x;
     public int y;
     public int pointer;
-
-    public String toString() {
-        return "pointer: " + pointer;
-    }
 }

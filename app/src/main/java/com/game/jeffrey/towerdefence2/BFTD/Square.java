@@ -49,26 +49,6 @@ public class Square extends ItemEntity
         return rect;
     }
 
-    public void setViewX(int viewX)
-    {
-        this.viewX = viewX;
-    }
-
-    public void setViewY(int viewY)
-    {
-        this.viewY = viewY;
-    }
-
-    public int getViewX()
-    {
-        return viewX;
-    }
-
-    public int getViewY()
-    {
-        return viewY;
-    }
-
     public void setRect() {
         this.rect.left = dispX + viewX;
         this.rect.top = dispY + viewY;

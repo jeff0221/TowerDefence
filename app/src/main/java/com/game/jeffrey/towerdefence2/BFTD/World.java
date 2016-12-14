@@ -15,6 +15,11 @@ public class World
     public static float MAX_Y = 639;
 
     public WorldMap worldMap = new WorldMap();
+    public Pather path = new Pather();
+
+    public World() {
+        path.getPath(worldMap);
+    }
 
     BottomMenu bottomMenu = new BottomMenu();
 
