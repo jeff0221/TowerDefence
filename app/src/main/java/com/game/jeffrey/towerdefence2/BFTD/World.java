@@ -168,7 +168,9 @@ public class World
             }
             else
             {
-                if(tapped && bottomMenu.itemTouched && (touchX < 280 && touchY < 595))
+                if(tapped && bottomMenu.itemTouched &&
+                        (touchX < 280 && touchY < 595 && touchX > 0 && touchY > 0) &&
+                        (highLighted.arrayY < 100 && highLighted.arrayX < 100))
                 {
                     ItemEntity contextEntity = highLighted;
 
