@@ -101,7 +101,7 @@ public class Pather
             ItemEntity current = map.grid[x][y];
             if (!visited.contains(current) && !next.contains(current))
             {
-                if (current.type != ItemEntity.typeOfItem.Wall)
+                if (current.type != ItemEntity.typeOfItem.Wall && current.type != ItemEntity.typeOfItem.Tower)
                 {
                     current.cameFrom = lastVisited;
                     return true;
