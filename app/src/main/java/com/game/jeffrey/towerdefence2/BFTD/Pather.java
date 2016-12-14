@@ -22,7 +22,7 @@ public class Pather
 
     private boolean foundExit = false;
 
-    public List<ItemEntity> getPath(WorldMap map) {
+    public void calculatePath(WorldMap map) {
         this.map = map;
         foundExit = false;
 
@@ -77,10 +77,8 @@ public class Pather
             Collections.reverse(path);
             Log.d("full path", path.toString());
 
-            return path;
         }
 
-        return null;
     }
 
     private void traversePath(ItemEntity block) {
@@ -110,5 +108,10 @@ public class Pather
         }
 
         return false;
+    }
+
+    public List<ItemEntity> getPath()
+    {
+        return this.path;
     }
 }

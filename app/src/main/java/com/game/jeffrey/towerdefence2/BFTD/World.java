@@ -23,12 +23,14 @@ public class World
     public Pather path = new Pather();
 
     public World() {
-        path.getPath(worldMap);
+        path.calculatePath(worldMap);
     }
 
     BottomMenu bottomMenu = new BottomMenu();
 
     List<Tower> towers = new ArrayList<>();
+
+    HighCostCustomer testCustomer = new HighCostCustomer(100,10,1);
 
     ItemEntity highLighted;
 
@@ -57,6 +59,8 @@ public class World
             aimRotation = 0;
             System.out.println(aimRotation);
         }
+
+
     }
 
     public ItemEntity pickEntity(float touchX, float touchY, boolean isTouch, boolean tapped)
@@ -231,5 +235,10 @@ public class World
 
          }
         }
+    }
+
+    public void calculateCustomer()
+    {
+
     }
 }

@@ -16,6 +16,9 @@ public abstract class GenericCustomer
     private int HP;
     private int speed;
     private int lifeCost;
+    public float x = 0;
+    public float y = 0;
+
 
     public GenericCustomer(int HP, int speed, int lifeCost)
     {
