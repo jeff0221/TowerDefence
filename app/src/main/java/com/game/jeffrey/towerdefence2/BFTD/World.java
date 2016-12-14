@@ -14,6 +14,11 @@ public class World
     public static float MAX_X = 359;
     public static float MAX_Y = 639;
 
+    public int lives = 10;
+    public int stageLevel = 0;
+
+    public int aimRotation = 0;
+
     public WorldMap worldMap = new WorldMap();
     public Pather path = new Pather();
 
@@ -43,6 +48,14 @@ public class World
         else if(touchY > BottomMenu.MIN_Y)
         {
             menu(touchX,touchY,isTapped);
+        }
+
+        aimRotation++;
+
+        if(aimRotation >= 360)
+        {
+            aimRotation = 0;
+            System.out.println(aimRotation);
         }
     }
 
@@ -201,6 +214,22 @@ public class World
         if(!bottomMenu.itemTouched)
         {
             highLighted = null;
+        }
+    }
+
+    public void aimTowers()
+    {
+
+        for(int x = 0; x < worldMap.gridWidth; x++)
+        {
+         for(int y = 0; y < worldMap.gridHeight; y++)
+         {
+             if(worldMap.grid[x][y].type == ItemEntity.typeOfItem.Tower)
+             {
+
+             }
+
+         }
         }
     }
 }

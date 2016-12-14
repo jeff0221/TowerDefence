@@ -15,6 +15,8 @@ public class WorldRenderer
     Bitmap bottomMenuImage;
     Bitmap wallImage;
     Bitmap highlightImage;
+    Bitmap floorImage;
+    Bitmap towerAimImage;
 
 
     public WorldRenderer(GameEngine game, World world)
@@ -22,11 +24,13 @@ public class WorldRenderer
         this.game = game;
         this.world = world;
         //load bitmaps
-        this.towerImage = game.loadBitmap("test_tower.png");
+        this.towerImage = game.loadBitmap("TowerPlatform.png");
         this.squareGFX = game.loadBitmap("square.png");
         this.bottomMenuImage = game.loadBitmap("Placeholdermenu.png");
         this.wallImage = game.loadBitmap("BFTDWall.png");
         this.highlightImage = game.loadBitmap("HighlightPicture.png");
+        this.floorImage = game.loadBitmap("floorTile.png");
+        this.towerAimImage = game.loadBitmap("TowerGunPositions.png");
     }
 
     public void render()
@@ -145,6 +149,25 @@ public class WorldRenderer
     public void renderTower(int x, int y)
     {
         game.drawBitmap(towerImage,x,y,0,0,30,30);
+
+        int pictureSpaceX = 0;
+        int pictureSpaceY = 0;
+
+        if (world.aimRotation >= 270 && world.aimRotation < 360)
+        {
+            pictureSpaceY = 90;
+        }
+        else if(world.aimRotation >= 180 && world.aimRotation < 270)
+        {
+            pictureSpaceY = 60;
+        }
+        else if(world.aimRotation >= 90 && world.aimRotation < 180)
+        {
+            pictureSpaceY = 0;
+        }
+
+        game.drawBitmap(towerAimImage,x,y,pictureSpaceX,pictureSpaceY,30,30);
+
     }
     public void renderWall(int x, int y)
     {
@@ -152,7 +175,7 @@ public class WorldRenderer
     }
     public void renderGround(int x, int y)
     {
-        game.drawBitmap(squareGFX,x,y,0,0,30,30);
+        game.drawBitmap(floorImage,x,y,0,0,30,30);
     }
     public void renderPoints(int x, int y) {
         game.drawBitmap(highlightImage, x, y, 0, 0, 30, 30);
