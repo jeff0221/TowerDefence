@@ -19,6 +19,8 @@ public class World
 
     public int aimRotation = 0;
 
+    public int testCounter = 0;
+
     public WorldMap worldMap = new WorldMap();
     public Pather path = new Pather();
 
@@ -58,6 +60,13 @@ public class World
         {
             aimRotation = 0;
             System.out.println(aimRotation);
+        }
+
+        testCounter++;
+
+        if(testCounter %10 == 0)
+        {
+            calculateCustomer();
         }
 
 
@@ -239,6 +248,23 @@ public class World
 
     public void calculateCustomer()
     {
+        if(!testCustomer.spawned)
+        {
+            testCustomer.x = worldMap.pathStartX;
+            testCustomer.y = worldMap.pathStartY;
+            testCustomer.pathProgression = path.getPath().size();
+            testCustomer.spawned = true;
+        }
+
+        if(testCustomer.pathProgression >= path.getPath().size())
+        {
+            testCustomer.pathProgression = 0;
+        }
+
+        testCustomer.x = path.getPath().get(testCustomer.pathProgression).x;
+        testCustomer.y = path.getPath().get(testCustomer.pathProgression).y;
+
+        testCustomer.pathProgression++;
 
     }
 }

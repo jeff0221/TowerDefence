@@ -17,6 +17,7 @@ public class WorldRenderer
     Bitmap highlightImage;
     Bitmap floorImage;
     Bitmap towerAimImage;
+    Bitmap enemyImage;
 
 
     public WorldRenderer(GameEngine game, World world)
@@ -31,6 +32,7 @@ public class WorldRenderer
         this.highlightImage = game.loadBitmap("HighlightPicture.png");
         this.floorImage = game.loadBitmap("floorTile.png");
         this.towerAimImage = game.loadBitmap("TowerGunPositions.png");
+        this.enemyImage = game.loadBitmap("xyellowmonster.png");
     }
 
     public void render()
@@ -45,6 +47,8 @@ public class WorldRenderer
         renderBottomMenu();
 
         renderDraggedItem();
+
+        renderEnemy();
     }
 
     public void deprecatedRenderTowers()
@@ -187,5 +191,23 @@ public class WorldRenderer
     }
     public void renderPoints(int x, int y) {
         game.drawBitmap(highlightImage, x, y, 0, 0, 30, 30);
+    }
+
+    public void renderEnemy()
+    {
+        if(world.testCustomer.spawned)
+        {
+            if(game.isTouchDown(0))
+            {
+                game.drawBitmap(enemyImage,(int)(world.testCustomer.x),
+                        (int)(world.testCustomer.y));
+            }
+            else
+            {
+                game.drawBitmap(enemyImage,(int)(world.testCustomer.x),
+                        (int)(world.testCustomer.y));
+
+            }
+        }
     }
 }

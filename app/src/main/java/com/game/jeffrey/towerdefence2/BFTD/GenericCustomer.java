@@ -18,7 +18,8 @@ public abstract class GenericCustomer
     private int lifeCost;
     public float x = 0;
     public float y = 0;
-
+    public boolean spawned = false;
+    public int pathProgression = 0;
 
     public GenericCustomer(int HP, int speed, int lifeCost)
     {
