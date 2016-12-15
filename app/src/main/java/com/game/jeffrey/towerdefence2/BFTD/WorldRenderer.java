@@ -77,7 +77,7 @@ public class WorldRenderer
 
                 int imagePosX = (int)world.worldMap.viewX + posX;
                 int imagePosY = (int)world.worldMap.viewY + posY;
-                //if the square at said grid is something it should draw something specific
+
                 if(itemContext.type == ItemEntity.typeOfItem.Tower)
                 {
                     renderTower(imagePosX,imagePosY);
@@ -100,11 +100,20 @@ public class WorldRenderer
                 }
 
 
-
                 if(world.highLighted != null && itemContext.arrayY == world.highLighted.arrayY &&
                     itemContext.arrayX == world.highLighted.arrayX)
                 {
                     game.drawBitmap(highlightImage,imagePosX,imagePosY);
+                }
+
+                for(int i = 0; i < world.highLightedEntities.size();i++)
+                {
+                    if(world.highLightedEntities != null &&
+                    itemContext.arrayY == world.highLightedEntities.get(i).arrayY &&
+                    itemContext.arrayX == world.highLightedEntities.get(i).arrayX)
+                    {
+                        game.drawBitmap(highlightImage,imagePosX,imagePosY);
+                    }
                 }
 
                 world.worldMap.grid[x][y].x = ((int)world.worldMap.viewX + posX);
@@ -132,7 +141,19 @@ public class WorldRenderer
             {
                 game.drawBitmap(wallImage,itemHolderX,itemHolderY);
             }
+            else if(contextItem.type == ItemEntity.typeOfItem.Ground)
+            {
+                game.drawBitmap(floorImage,itemHolderX,itemHolderY);
+            }
         }
+        if(world.drawingMaze)
+        {
+            game.drawBitmap(highlightImage,175,(int)BottomMenu.MIN_Y);
+            game.drawBitmap(highlightImage,153,(int)BottomMenu.MIN_Y);
+            game.drawBitmap(highlightImage,175,(int)BottomMenu.MIN_Y + 30);
+            game.drawBitmap(highlightImage,153,(int)BottomMenu.MIN_Y + 30);
+        }
+
     }
     public void renderDraggedItem()
     {
@@ -195,19 +216,33 @@ public class WorldRenderer
 
     public void renderEnemy()
     {
-        if(world.testCustomer.spawned)
+        //if the thing is spawned AND it is on screen
+        if(world.testCustomer.spawned &&
+                world.testCustomer.x >= 0 &&
+                world.testCustomer.y >= 0 &&
+                world.testCustomer.x <= World.MAX_X  &&
+                world.testCustomer.y <= World.MAX_Y - 70)
         {
-            if(game.isTouchDown(0))
-            {
-                game.drawBitmap(enemyImage,(int)(world.testCustomer.x),
-                        (int)(world.testCustomer.y));
-            }
-            else
-            {
-                game.drawBitmap(enemyImage,(int)(world.testCustomer.x),
-                        (int)(world.testCustomer.y));
+            int imagePosX = (int)(world.testCustomer.x);
+            int imagePosY = (int)(world.testCustomer.y);
 
+            drawGenericEnemy(imagePosX,imagePosY);
+
+world.testCustomer.x = world.testCustomer.viewX - world.testCustomer.currentSpace.arrayX / 30;
+world.testCustomer.y = world.testCustomer.viewY - world.testCustomer.currentSpace.arrayY / 30;
+        }
+        else
+        {
+            if(world.testCustomer.currentSpace != null)
+            {
+            world.testCustomer.x = world.testCustomer.currentSpace.x;
+            world.testCustomer.y = world.testCustomer.currentSpace.y;
             }
         }
+    }
+
+    public void drawGenericEnemy(int x, int y)
+    {
+        game.drawBitmap(enemyImage,x,y);
     }
 }

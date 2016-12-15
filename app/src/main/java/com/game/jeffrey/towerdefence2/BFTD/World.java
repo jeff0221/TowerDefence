@@ -31,44 +31,57 @@ public class World
     BottomMenu bottomMenu = new BottomMenu();
 
     List<Tower> towers = new ArrayList<>();
+    List<GenericCustomer> enemies = new ArrayList<>();
 
-    HighCostCustomer testCustomer = new HighCostCustomer(100,10,1);
+    GenericCustomer testCustomer = new HighCostCustomer(100,10,1);
 
     ItemEntity highLighted;
+
+    public boolean finishedDrawingMaze = true;
+    public boolean drawingMaze;
+    List<ItemEntity> highLightedEntities = new ArrayList<>();
 
     // RESOLUTION: 640 x 360 (16:9)
 
     public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch,boolean isTapped)
     {
-        dragAndDropMenuItem(touchX,touchY,isTouch,isTapped);
-
-        if(touchY < BottomMenu.MIN_Y)
-        {
-            if(!bottomMenu.itemTouched)
-            {
-                moveWorldView(touchX,touchY,isTouch);
-            }
-        }
-        else if(touchY > BottomMenu.MIN_Y)
-        {
-            menu(touchX,touchY,isTapped);
-        }
-
+        //TODO: First we calculate some game logic
         aimRotation++;
 
         if(aimRotation >= 360)
         {
             aimRotation = 0;
-            System.out.println(aimRotation);
         }
 
         testCounter++;
 
         if(testCounter %10 == 0)
         {
-            calculateCustomer(deltaTime);
+            calculateCustomerMoves(deltaTime);
         }
 
+        //TODO: Second we calculate user inputs
+
+        drawMaze(touchX,touchY,isTouch,isTapped,bottomMenu.selectedItem);
+
+        if(!drawingMaze)
+        {
+            dragAndDropMenuItem(touchX,touchY,isTouch,isTapped);
+        }
+
+        if(touchY < BottomMenu.MIN_Y)
+        {
+            if(!bottomMenu.itemTouched && finishedDrawingMaze && !drawingMaze)
+            {
+                moveWorldView(touchX,touchY,isTouch);
+                moveCustomerView(touchX,touchY,isTouch);
+            }
+        }
+
+        if(touchY > BottomMenu.MIN_Y)
+        {
+            menu(touchX,touchY,isTapped);
+        }
 
     }
 
@@ -91,7 +104,7 @@ public class World
             }
         }
         }
-        return bottomMenu.selectedItem;
+        return null;
     }
 
     public Tower pickTower(float touchX, float touchY)
@@ -160,17 +173,39 @@ public class World
             {
             if(touchX > 0 && touchX < 52)//button 1
             {
-                bottomMenu.selectedItem = new Tower(280,595);
-                Log.d("Button 1","Pressed");
+                bottomMenu.selectedItem = new Square(280,595);
+                Log.d("Button 1 GROUND","Pressed");
             }
             else if(touchX > 53 && touchX < 106)//button 2
             {
                 bottomMenu.selectedItem = new Wall(280,595);
-                Log.d("Button 2","Pressed");
+                Log.d("Button 2 WALL","Pressed");
             }
             else if(touchX > 107 && touchX < 160)//button 3
             {
-                Log.d("Button 3","Pressed");
+                bottomMenu.selectedItem = new Tower(280,595);
+                Log.d("Button 3 TOWER","Pressed");
+            }
+            else if(touchX > 161 && touchX < 214)//button 4
+            {
+                if(drawingMaze)
+                {
+                    drawingMaze = false;
+                    Log.d("Drawing Maze","False");
+                }
+                else
+                {
+                    if(bottomMenu.selectedItem != null)
+                    {
+                        drawingMaze = true;
+                        Log.d("Drawing Maze","True");
+                    }
+                    else
+                    {
+                        drawingMaze = false;
+                        Log.d("Drawing Maze","False");
+                    }
+                }
             }
             }
 
@@ -192,15 +227,15 @@ public class World
                 }
                 else if(bottomMenu.itemTouched)
                 {
-                    bottomMenu.selectedItem.x = touchX;
-                    bottomMenu.selectedItem.y = touchY;
+                    bottomMenu.selectedItem.x = touchX-ItemEntity.WIDTH/2;
+                    bottomMenu.selectedItem.y = touchY-ItemEntity.HEIGHT/2;
                     highLighted = pickEntity(touchX,touchY,isTouch,tapped);
                 }
             }
             else
             {
-                if(tapped && bottomMenu.itemTouched &&
-                        (touchX < 280 && touchY < 595 && touchX > 0 && touchY > 0) &&
+                if(bottomMenu.itemTouched &&
+                        (touchY < 595 && touchX > 0 && touchY > 0) &&
                         (highLighted.arrayY < 100 && highLighted.arrayX < 100))
                 {
                     ItemEntity contextEntity = highLighted;
@@ -209,6 +244,14 @@ public class World
                     bottomMenu.selectedItem.arrayY = contextEntity.arrayY;
 
                     worldMap.grid[contextEntity.arrayX][contextEntity.arrayY] = bottomMenu.selectedItem;
+
+                    //TODO: Just for Testing atm START
+
+                    path.calculatePath(worldMap);
+
+                    //Virker ikke helt endnu.
+                    //Den starter den nye path fra det sted i path.array den var nået til i sidste path progression.
+                    //TODO: Just for Testing atm END
 
                     Log.d(contextEntity.type + " replaced by",bottomMenu.selectedItem.type+"");
 
@@ -223,7 +266,6 @@ public class World
                 }
             }
         }
-
         if(!bottomMenu.itemTouched)
         {
             highLighted = null;
@@ -246,8 +288,10 @@ public class World
         }
     }
 
-    public void calculateCustomer(float deltaTime)
+    public void calculateCustomerMoves(float deltaTime)
     {
+
+        if(!path.getPath().isEmpty()){
         if(!testCustomer.spawned)
         {
             testCustomer.x = worldMap.pathStartX;
@@ -261,12 +305,118 @@ public class World
             testCustomer.pathProgression = 0;
         }
 
-        int constant = 1;
-
         testCustomer.x = path.getPath().get(testCustomer.pathProgression).x;
         testCustomer.y = path.getPath().get(testCustomer.pathProgression).y;
+        testCustomer.currentSpace = path.getPath().get(testCustomer.pathProgression);
 
         testCustomer.pathProgression++;
 
+        }
+        testCustomer.viewX = testCustomer.x;
+        testCustomer.viewY = testCustomer.y;
+    }
+
+    public void moveCustomerView(float touchX, float touchY, boolean isTouch)
+    {//Corrects visual for mob spawns
+        if(testCustomer.spawned)
+        {
+            testCustomer.viewX = testCustomer.x;
+            testCustomer.viewY = testCustomer.y;
+
+            if(isTouch)
+            {
+                if(!testCustomer.touched)
+                {
+                    testCustomer.touched = true;
+                    testCustomer.startX = touchX;
+                    testCustomer.startY = touchY;
+                }
+                if(testCustomer.touched)
+                {
+                    testCustomer.viewX = testCustomer.viewX - (testCustomer.startX - touchX);
+                    testCustomer.viewY = testCustomer.viewY - (testCustomer.startY - touchY);
+
+                    testCustomer.viewX = Math.max((int)(-360), Math.min((int)testCustomer.viewX, World.MAX_X));
+                    testCustomer.viewY = Math.max((int)(-640), Math.min((int)testCustomer.viewY, World.MAX_Y));
+
+                    testCustomer.startX = touchX;
+                    testCustomer.startY = touchY;
+                }
+            }
+            else
+            {
+
+                testCustomer.touched = false;
+            }
+        }
+    }
+
+    public void drawMaze(float touchX, float touchY, boolean isTouch, boolean isTapped, ItemEntity itemEntity)
+    {
+        if(bottomMenu.selectedItem != null)
+        {
+            if(isTouch)
+            {
+                if(drawingMaze && finishedDrawingMaze)
+                {
+                    finishedDrawingMaze = false;
+                    //Log.d("FinishedDrawing inside","False");
+                    highLightedEntities = new ArrayList<>();
+                }
+                else
+                {
+                    if(touchY < 595 && touchX >= 0 && touchY >= 0)
+                    {
+                        ItemEntity pickedEntity = pickEntity(touchX,touchY,isTouch,isTapped);
+                        if(pickedEntity != null&& pickedEntity.arrayX <= 20 && pickedEntity.arrayY <= 30)
+                        {
+                            if(!highLightedEntities.contains(pickedEntity))
+                            {
+                                highLightedEntities.add(pickedEntity);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(drawingMaze && !finishedDrawingMaze)
+                {
+                    ItemEntity contextItem = itemEntity;
+                    ItemEntity typeItem;
+                    for(int i = 0; i < highLightedEntities.size();i++)
+                    {
+                        if(contextItem.type == ItemEntity.typeOfItem.Wall)
+                        {
+                            typeItem = new Wall(contextItem.arrayX,contextItem.arrayY);
+                        }
+                        else if(contextItem.type == ItemEntity.typeOfItem.Tower)
+                        {
+                            typeItem = new Tower(contextItem.arrayX,contextItem.arrayY);
+                        }
+                        else
+                        {
+                            //TODO: Lave det så alle typerne some spillerne kan lave er her
+                            typeItem = new Square(contextItem.arrayX,contextItem.arrayY);
+                        }
+                        typeItem.x = highLightedEntities.get(i).x;
+                        typeItem.y = highLightedEntities.get(i).y;
+
+                        worldMap.grid[highLightedEntities.get(i).arrayX][highLightedEntities.get(i).arrayY] = typeItem;
+                    }
+                    path.calculatePath(worldMap);
+
+                    drawingMaze = false;
+                    Log.d("Drawing inside","False");
+                    bottomMenu.selectedItem = null;
+                }
+                //Log.d("FinishedDrawing inside","True");
+                finishedDrawingMaze = true;
+            }
+        }
+        if(!drawingMaze)
+        {
+            highLightedEntities = new ArrayList<>();
+        }
     }
 }

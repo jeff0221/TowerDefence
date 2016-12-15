@@ -21,6 +21,17 @@ public abstract class GenericCustomer
     public boolean spawned = false;
     public int pathProgression = 0;
 
+    ItemEntity currentSpace;
+
+    //Just to have the visuals be better i guess
+    float startX = 0;
+    float startY = 0;
+    float viewX = 0;
+    float viewY = 0;
+    boolean touched = false;
+
+
+
     public GenericCustomer(int HP, int speed, int lifeCost)
     {
         this.HP = HP;

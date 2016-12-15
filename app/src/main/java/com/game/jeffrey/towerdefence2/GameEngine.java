@@ -332,9 +332,12 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         boolean result = false;
         for(int i = 0; i < getTouchEvents().size();i++)
         {
-            if(getTouchEvents().get(i).type == TouchEvent.TouchEventType.Up)
+            if(getTouchEvents().get(i) != null)
             {
-                return true;
+                if(getTouchEvents().get(i).type == TouchEvent.TouchEventType.Up)
+                {
+                    return true;
+                }
             }
         }
 
