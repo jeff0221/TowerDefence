@@ -14,12 +14,12 @@ public class World
     public static float MAX_X = 359;
     public static float MAX_Y = 639;
 
-    public int lives = 10;
+    public int lives = 20;
     public int stageLevel = 0;
 
     public int aimRotation = 0;
-
     public int testCounter = 0;
+    public int gameCounter = 0;
 
     public WorldMap worldMap = new WorldMap();
     public Pather path = new Pather();
@@ -41,11 +41,19 @@ public class World
     public boolean drawingMaze;
     List<ItemEntity> highLightedEntities = new ArrayList<>();
 
+    int slowEnemyRelease = 0;
+
     // RESOLUTION: 640 x 360 (16:9)
 
     public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch,boolean isTapped)
     {
+        //TODO: Arrangement
+        if(testCounter %10 == 0 && enemies.size() < 30)
+        {
+            generateEnemy();
+        }
         //TODO: First we calculate some game logic
+
         aimRotation++;
 
         if(aimRotation >= 360)
@@ -53,22 +61,20 @@ public class World
             aimRotation = 0;
         }
 
-        testCounter++;
-
         if(testCounter %10 == 0)
         {
-            calculateCustomerMoves(deltaTime);
+            calculateCustomerMoves();
         }
 
-        //TODO: Second we calculate user inputs
+        testCounter++;
 
+        //TODO: Second we calculate user inputs
         drawMaze(touchX,touchY,isTouch,isTapped,bottomMenu.selectedItem);
 
         if(!drawingMaze)
         {
             dragAndDropMenuItem(touchX,touchY,isTouch,isTapped);
         }
-
         if(touchY < BottomMenu.MIN_Y)
         {
             if(!bottomMenu.itemTouched && finishedDrawingMaze && !drawingMaze)
@@ -77,12 +83,16 @@ public class World
                 moveCustomerView(touchX,touchY,isTouch);
             }
         }
-
         if(touchY > BottomMenu.MIN_Y)
         {
             menu(touchX,touchY,isTapped);
         }
 
+        gameCounter++;
+        if(gameCounter >= enemies.size())
+        {
+            gameCounter = 0;
+        }
     }
 
     public ItemEntity pickEntity(float touchX, float touchY, boolean isTouch, boolean tapped)
@@ -288,65 +298,81 @@ public class World
         }
     }
 
-    public void calculateCustomerMoves(float deltaTime)
+    public void calculateCustomerMoves()
     {
-
-        if(!path.getPath().isEmpty()){
-        if(!testCustomer.spawned)
+        GenericCustomer contextCustomer;
+        if(enemies.isEmpty())
         {
-            testCustomer.x = worldMap.pathStartX;
-            testCustomer.y = worldMap.pathStartY;
-            testCustomer.pathProgression = path.getPath().size();
-            testCustomer.spawned = true;
+            enemies.add(testCustomer);
         }
+            for(int i = 0; i < enemies.size();i++)
+            {
+            contextCustomer = enemies.get(i);
+            if(!path.getPath().isEmpty()){
+                if(!contextCustomer.spawned)
+                {
+                    contextCustomer.x = worldMap.pathStartX;
+                    contextCustomer.y = worldMap.pathStartY;
+                    contextCustomer.pathProgression = path.getPath().size();
+                    contextCustomer.spawned = true;
+                }
 
-        if(testCustomer.pathProgression >= path.getPath().size())
-        {
-            testCustomer.pathProgression = 0;
-        }
+                if(contextCustomer.pathProgression >= path.getPath().size())
+                {
+                    contextCustomer.pathProgression = 0;
+                }
 
-        testCustomer.x = path.getPath().get(testCustomer.pathProgression).x;
-        testCustomer.y = path.getPath().get(testCustomer.pathProgression).y;
-        testCustomer.currentSpace = path.getPath().get(testCustomer.pathProgression);
+                contextCustomer.x = path.getPath().get(contextCustomer.pathProgression).x;
+                contextCustomer.y = path.getPath().get(contextCustomer.pathProgression).y;
+                contextCustomer.currentSpace = path.getPath().get(contextCustomer.pathProgression);
 
-        testCustomer.pathProgression++;
+                contextCustomer.pathProgression++;
 
-        }
-        testCustomer.viewX = testCustomer.x;
-        testCustomer.viewY = testCustomer.y;
+            }
+            contextCustomer.viewX = contextCustomer.x;
+            contextCustomer.viewY = contextCustomer.y;
+            }
     }
 
     public void moveCustomerView(float touchX, float touchY, boolean isTouch)
     {//Corrects visual for mob spawns
-        if(testCustomer.spawned)
+        GenericCustomer contextCustomer;
+        if(enemies.isEmpty())
         {
-            testCustomer.viewX = testCustomer.x;
-            testCustomer.viewY = testCustomer.y;
+            enemies.add(testCustomer);
+        }
 
-            if(isTouch)
+        for(int i = 0; i < enemies.size();i++)
+        {
+            contextCustomer = enemies.get(i);
+            if (contextCustomer.spawned)
             {
-                if(!testCustomer.touched)
+                contextCustomer.viewX = contextCustomer.x;
+                contextCustomer.viewY = contextCustomer.y;
+
+                if (isTouch)
                 {
-                    testCustomer.touched = true;
-                    testCustomer.startX = touchX;
-                    testCustomer.startY = touchY;
-                }
-                if(testCustomer.touched)
+                    if (!contextCustomer.touched)
+                    {
+                        contextCustomer.touched = true;
+                        contextCustomer.startX = touchX;
+                        contextCustomer.startY = touchY;
+                    }
+                    if (contextCustomer.touched)
+                    {
+                        contextCustomer.viewX = contextCustomer.viewX - (contextCustomer.startX - touchX);
+                        contextCustomer.viewY = contextCustomer.viewY - (contextCustomer.startY - touchY);
+
+                        contextCustomer.viewX = Math.max((int) (-360), Math.min((int) contextCustomer.viewX, World.MAX_X));
+                        contextCustomer.viewY = Math.max((int) (-640), Math.min((int) contextCustomer.viewY, World.MAX_Y));
+
+                        contextCustomer.startX = touchX;
+                        contextCustomer.startY = touchY;
+                    }
+                } else
                 {
-                    testCustomer.viewX = testCustomer.viewX - (testCustomer.startX - touchX);
-                    testCustomer.viewY = testCustomer.viewY - (testCustomer.startY - touchY);
-
-                    testCustomer.viewX = Math.max((int)(-360), Math.min((int)testCustomer.viewX, World.MAX_X));
-                    testCustomer.viewY = Math.max((int)(-640), Math.min((int)testCustomer.viewY, World.MAX_Y));
-
-                    testCustomer.startX = touchX;
-                    testCustomer.startY = touchY;
+                    contextCustomer.touched = false;
                 }
-            }
-            else
-            {
-
-                testCustomer.touched = false;
             }
         }
     }
@@ -418,5 +444,14 @@ public class World
         {
             highLightedEntities = new ArrayList<>();
         }
+    }
+
+    public void generateEnemy()
+    {
+
+            //enemies.add(new HighCostCustomer(100,10,3));
+            //enemies.add(new FastCustomer(100,30,1));
+            enemies.add(new SturdyCustomer(200,10,2));
+
     }
 }

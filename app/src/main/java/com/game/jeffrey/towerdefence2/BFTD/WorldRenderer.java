@@ -216,28 +216,32 @@ public class WorldRenderer
 
     public void renderEnemy()
     {
-        //if the thing is spawned AND it is on screen
-        if(world.testCustomer.spawned &&
-                world.testCustomer.x >= 0 &&
-                world.testCustomer.y >= 0 &&
-                world.testCustomer.x <= World.MAX_X  &&
-                world.testCustomer.y <= World.MAX_Y - 70)
+        for(int i = 0; i < world.enemies.size();i++)
         {
-            int imagePosX = (int)(world.testCustomer.x);
-            int imagePosY = (int)(world.testCustomer.y);
+        GenericCustomer contextCustomer = world.enemies.get(i);
+        //if the thing is spawned AND it is on screen
+        if(contextCustomer.spawned &&
+                contextCustomer.x >= 0 &&
+                contextCustomer.y >= 0 &&
+                contextCustomer.x <= World.MAX_X  &&
+                contextCustomer.y <= World.MAX_Y - 70)
+        {
+            int imagePosX = (int)(contextCustomer.x);
+            int imagePosY = (int)(contextCustomer.y);
 
             drawGenericEnemy(imagePosX,imagePosY);
 
-world.testCustomer.x = world.testCustomer.viewX - world.testCustomer.currentSpace.arrayX / 30;
-world.testCustomer.y = world.testCustomer.viewY - world.testCustomer.currentSpace.arrayY / 30;
+            contextCustomer.x = contextCustomer.viewX - contextCustomer.currentSpace.arrayX / 30;
+            contextCustomer.y = contextCustomer.viewY - contextCustomer.currentSpace.arrayY / 30;
         }
         else
         {
-            if(world.testCustomer.currentSpace != null)
+            if(contextCustomer.currentSpace != null)
             {
-            world.testCustomer.x = world.testCustomer.currentSpace.x;
-            world.testCustomer.y = world.testCustomer.currentSpace.y;
+                contextCustomer.x = contextCustomer.currentSpace.x;
+                contextCustomer.y = contextCustomer.currentSpace.y;
             }
+        }
         }
     }
 

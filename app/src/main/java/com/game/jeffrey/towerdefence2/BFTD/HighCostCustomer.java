@@ -9,5 +9,6 @@ public class HighCostCustomer extends GenericCustomer
     public HighCostCustomer(int HP, int speed, int lifeCost)
     {
         super(HP, speed, lifeCost);
+        type = customerTypes.HighCost;
     }
 }

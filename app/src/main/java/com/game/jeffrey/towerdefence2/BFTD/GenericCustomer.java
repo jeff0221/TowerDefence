@@ -20,6 +20,7 @@ public abstract class GenericCustomer
     public float y = 0;
     public boolean spawned = false;
     public int pathProgression = 0;
+    public customerTypes type;
 
     ItemEntity currentSpace;
 
