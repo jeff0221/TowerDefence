@@ -75,6 +75,7 @@ public class WorldRenderer
             game.drawBitmap(towerImage, (int)tower.x, (int)tower.y);
         }*/
     }
+
     public void renderTopBar()
     {
         game.drawBitmap(topBarImage,0,0);

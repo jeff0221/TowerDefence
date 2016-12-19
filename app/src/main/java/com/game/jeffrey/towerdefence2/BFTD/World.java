@@ -423,6 +423,7 @@ public class World
                                     highLightedEntities.get(i).arrayY == cleanUpworker.arrayY)
                             {
                                 towers.remove(towerIndex);
+                                towerCount--;
                             }
                         }
 
@@ -563,7 +564,8 @@ public class World
             contextShot.lifeTime++;
             int speedFactor = contextShot.shotFrom.getAttackSpeed()/5;
 
-            if(contextShot.target != null && contextShot.lifeTime < contextShot.shotFrom.getRange()/3)
+            if(contextShot.target != null && contextShot.lifeTime < contextShot.shotFrom.getRange()/4 &&
+                    contextShot.x > 0 && contextShot.y > 0)
             {
                 if(contextShot.x < contextShot.target.x + GenericCustomer.WIDTH/2)
                 {
