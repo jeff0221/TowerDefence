@@ -98,7 +98,7 @@ public class Pather
     }
 
     private boolean isPossible(int x, int y) {
-        if (x > 0 && x < map.gridWidth && y > 0 && y < map.gridHeight) {
+        if (x >= 0 && x < map.gridWidth && y >= 0 && y < map.gridHeight) {
             ItemEntity current = map.grid[x][y];
             if (!visited.contains(current) && !next.contains(current))
             {

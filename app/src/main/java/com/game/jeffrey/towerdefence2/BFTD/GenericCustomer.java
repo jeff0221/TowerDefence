@@ -13,11 +13,16 @@ public abstract class GenericCustomer
         HighCost
     }
 
+    public static float WIDTH = 30;
+    public static float HEIGHT = 30;
+
     private int HP;
     private int speed;
     private int lifeCost;
     public float x = 0;
     public float y = 0;
+    public int arrayX = 0;
+    public int arrayY = 0;
     public boolean spawned = false;
     public int pathProgression = 0;
     public customerTypes type;
@@ -31,13 +36,26 @@ public abstract class GenericCustomer
     float viewY = 0;
     boolean touched = false;
 
-
+    private int arrayIndex = 0;
 
     public GenericCustomer(int HP, int speed, int lifeCost)
     {
         this.HP = HP;
         this.speed = speed;
         this.lifeCost = lifeCost;
+    }
+
+
+
+    public int getArrayIndex()
+    {
+        return arrayIndex;
+    }
+
+    public void setArrayIndex(int arrayIndex)
+    {
+        this.arrayIndex = arrayIndex;
+
     }
 
     public int getHP()

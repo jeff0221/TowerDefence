@@ -3,6 +3,7 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 import com.game.jeffrey.towerdefence2.GameEngine;
 
@@ -18,6 +19,9 @@ public class WorldRenderer
     Bitmap floorImage;
     Bitmap towerAimImage;
     Bitmap enemyImage;
+    Bitmap standardShotImage;
+    Bitmap topBarImage;
+    Typeface font;
 
 
     public WorldRenderer(GameEngine game, World world)
@@ -33,6 +37,9 @@ public class WorldRenderer
         this.floorImage = game.loadBitmap("floorTile.png");
         this.towerAimImage = game.loadBitmap("TowerGunPositions.png");
         this.enemyImage = game.loadBitmap("xyellowmonster.png");
+        this.standardShotImage = game.loadBitmap("gunfire.png");
+        this.font = game.loadFont("font.ttf");
+        this.topBarImage = game.loadBitmap("Topbar.png");
     }
 
     public void render()
@@ -42,23 +49,35 @@ public class WorldRenderer
 
         //second
         renderWorld();
-
         //third
+        renderTopBar();
+
         renderBottomMenu();
 
         renderDraggedItem();
 
         renderEnemy();
+
+        renderShots();
+
+        game.drawText(font, "FPS: " + game.getFramesPerSecond(), 24, 13, Color.RED, 10);
+        game.drawText(font, "Enemies: " + world.enemies.size(), 124, 13, Color.RED, 10);
+        game.drawText(font, "Shots: " + world.shotsFired.size(), 224, 13, Color.RED, 10);
+
     }
 
     public void deprecatedRenderTowers()
     {
-        Tower tower;
+        /*Tower tower;
         for(int i = 0; i < world.towers.size();i++)
         {
             tower = world.towers.get(i);
             game.drawBitmap(towerImage, (int)tower.x, (int)tower.y);
-        }
+        }*/
+    }
+    public void renderTopBar()
+    {
+        game.drawBitmap(topBarImage,0,0);
     }
 
     public void renderWorld()
@@ -121,6 +140,15 @@ public class WorldRenderer
 
                 world.worldMap.grid[x][y].arrayX = x;
                 world.worldMap.grid[x][y].arrayY = y;
+
+                if(itemContext.type == ItemEntity.typeOfItem.Tower)
+                {
+                    Tower towerItem = (Tower)itemContext;
+                    towerItem.x = ((int)world.worldMap.viewX + posX);
+                    towerItem.y = ((int)world.worldMap.viewY + posY);
+                    towerItem.arrayX = x;
+                    towerItem.arrayY = y;
+                }
             }
         }
     }
@@ -216,9 +244,10 @@ public class WorldRenderer
 
     public void renderEnemy()
     {
+        GenericCustomer contextCustomer;
         for(int i = 0; i < world.enemies.size();i++)
         {
-        GenericCustomer contextCustomer = world.enemies.get(i);
+        contextCustomer = world.enemies.get(i);
         //if the thing is spawned AND it is on screen
         if(contextCustomer.spawned &&
                 contextCustomer.x >= 0 &&
@@ -244,9 +273,34 @@ public class WorldRenderer
         }
         }
     }
+    public void renderShots()
+    {
+        TowerShot contextShot;
+        for(int i = 0; i < world.shotsFired.size();i++)
+        {
+            contextShot = world.shotsFired.get(i);
+            //if the thing is spawned AND it is on screen
+            if(contextShot.x >= 0 &&
+                    contextShot.y >= 0 &&
+                    contextShot.x <= World.MAX_X  &&
+                    contextShot.y <= World.MAX_Y - 70)
+            {
+                int imagePosX = (int)(contextShot.x);
+                int imagePosY = (int)(contextShot.y);
 
+                drawTowerShot(imagePosX,imagePosY);
+
+                contextShot.x = contextShot.viewX - contextShot.target.arrayX/30;
+                contextShot.y = contextShot.viewY - contextShot.target.arrayY/30;
+            }
+        }
+    }
     public void drawGenericEnemy(int x, int y)
     {
         game.drawBitmap(enemyImage,x,y);
+    }
+    public void drawTowerShot(int x, int y)
+    {
+        game.drawBitmap(standardShotImage,x,y);
     }
 }

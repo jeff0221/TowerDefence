@@ -2,8 +2,8 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 public abstract class ItemEntity
 {
-    public static float WIDTH = 50;
-    public static float HEIGHT = 33;
+    public static float WIDTH = 30;
+    public static float HEIGHT = 30;
 
     public ItemEntity cameFrom;
 

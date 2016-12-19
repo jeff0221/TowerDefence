@@ -14,22 +14,36 @@ public abstract class GenericWorker
         Sniper
     }
 
+    public static float WIDTH = 30;
+    public static float HEIGHT = 30;
+
     private int damage;
     private int stamina;
     private int attackSpeed;
     private int level;
     private int range;
 
+    public float x;
+    public float y;
+    public int arrayX = 100;
+    public int arrayY = 100;
+
+    public GenericCustomer target;
+
+    public ItemEntity platform;
+
     private static int COST = 10;
 
-    private workerType type;
-    public GenericWorker(int damage, int stamina, int attackSpeed, int level, int range)
+    public workerType type;
+
+    public GenericWorker(int damage, int stamina, int attackSpeed, int level, int range, ItemEntity platform)
     {
-        this.damage = damage;
+        this.damage = damage + 30;
         this.stamina = stamina;
         this.attackSpeed = attackSpeed;
         this.level = level;
         this.range = range;
+        this.platform = platform;
     }
 
     public void upgrade(int cost)
@@ -55,11 +69,18 @@ public abstract class GenericWorker
         }
     }
 
+    public void calibratePosition()
+    {
+        this.x = platform.x;
+        this.y = platform.y;
+        this.arrayX = platform.arrayX;
+        this.arrayY = platform.arrayY;
+    }
+
     public int getDamage()
     {
         return damage;
     }
-
 
     public void setDamage(int damage)
     {
