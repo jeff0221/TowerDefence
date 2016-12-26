@@ -215,7 +215,6 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
         }
     }
 
-
     public int getFramebufferWidth()
     {
         return surfaceView.getWidth();
@@ -233,7 +232,6 @@ public abstract class GameEngine extends Activity implements Runnable, View.OnKe
             canvas.drawBitmap(bitmap,x,y,null);
         }
     }
-
     public void drawBitmap(Bitmap bitmap, Rect src, Rect dest) {
         if (canvas == null) {
             return;

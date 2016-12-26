@@ -28,6 +28,7 @@ public abstract class GenericWorker
     public int arrayX = 100;
     public int arrayY = 100;
 
+
     public GenericCustomer target;
 
     public ItemEntity platform;
@@ -38,7 +39,7 @@ public abstract class GenericWorker
 
     public GenericWorker(int damage, int stamina, int attackSpeed, int level, int range, ItemEntity platform)
     {
-        this.damage = damage + 30;
+        this.damage = damage;
         this.stamina = stamina;
         this.attackSpeed = attackSpeed;
         this.level = level;

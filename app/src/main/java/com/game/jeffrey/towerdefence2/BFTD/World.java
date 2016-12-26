@@ -14,12 +14,13 @@ public class World
     public static float MAX_X = 359;
     public static float MAX_Y = 639;
 
+    float startTime = System.nanoTime();
+    float passedTime = 0.0f;
+
+    public int testCounter = 0;
+
     public int lives = 20;
     public int stageLevel = 0;
-
-    public int aimRotation = 0;
-    public int testCounter = 0;
-    public int gameCounter = 0;
 
     public WorldMap worldMap = new WorldMap();
     public Pather path = new Pather();
@@ -33,6 +34,7 @@ public class World
     List<GenericWorker> towers = new ArrayList<>();
     List<GenericCustomer> enemies = new ArrayList<>();
     List<TowerShot> shotsFired = new ArrayList<>();
+    List<Explosion> explosions = new ArrayList<>();
 
     ItemEntity highLighted;
 
@@ -40,16 +42,30 @@ public class World
     public boolean drawingMaze;
     List<ItemEntity> highLightedEntities = new ArrayList<>();
 
-    int slowEnemyRelease = 0;
+    boolean secondPassed = false;
 
-    private boolean enemySpawned = false;
+    boolean enemySpawned = true;
 
     // RESOLUTION: 640 x 360 (16:9)
 
     public void update(float deltaTime, float touchX, float touchY, boolean isTouch, boolean isDoubleTouch,boolean isTapped)
     {
+        if(System.nanoTime() - startTime > 999999999)
+        {
+            secondPassed = true;
+            startTime = System.nanoTime();
+        }
+        else
+        {
+            if(secondPassed)
+            {
+                secondPassed = false;
+            }
+        }
+
         //TODO: Arrangement
-        if(testCounter %10 == 0 && enemies.size() < 16 && !enemySpawned)
+
+        if(secondPassed && enemies.size() < 16 && !enemySpawned)
         {
             generateEnemy();
         }
@@ -57,21 +73,17 @@ public class World
         {
             enemySpawned = true;
         }
+
         //TODO: First we calculate some game logic
 
-        aimRotation++;
-
-        if(aimRotation >= 360)
-        {
-            aimRotation = 0;
-        }
+        calculateAimRotation();
 
         if(!shotsFired.isEmpty())
         {
             calculateShotsFired();
         }
 
-        if(testCounter %10 == 0)
+        if(secondPassed)
         {
             calculateCustomerMoves();
             if(!towers.isEmpty())
@@ -81,10 +93,13 @@ public class World
             }
         }
 
-        testCounter++;
+        if(!towers.isEmpty() && System.nanoTime() - startTime > 999999999)
+        {
+            calculateTowerAction();
+        }
 
         //TODO: Second we calculate user inputs
-        drawMaze(touchX,touchY,isTouch,isTapped,bottomMenu.selectedItem);
+        drawMaze(touchX,touchY,isTouch,bottomMenu.selectedItem);
 
         if(!drawingMaze)
         {
@@ -100,27 +115,43 @@ public class World
                 moveShotView(touchX,touchY,isTouch);
             }
         }
-        if(touchY > BottomMenu.MIN_Y)
+        else
         {
             menu(touchX,touchY,isTapped);
         }
 
-        gameCounter++;
-        if(gameCounter >= enemies.size())
+        passedTime = startTime;
+
+    }
+
+    public void calculateAimRotation()
+    {
+        int towerCount = towers.size();
+        Tower contextTower;
+        for(int i = 0; i<towerCount;i++)
         {
-            gameCounter = 0;
+            contextTower = (Tower) towers.get(i).platform;
+
+            contextTower.aimRotation++;
+            contextTower.aimRotation++;
+
+            if(contextTower.aimRotation >= 360)
+            {
+                contextTower.aimRotation = 0;
+            }
         }
     }
 
-    public ItemEntity pickEntity(float touchX, float touchY, boolean isTouch, boolean tapped)
+    public ItemEntity pickEntity(float touchX, float touchY, boolean isTouch)
     {
-        if(isTouch || tapped)
+        ItemEntity contextEntity = null;
+        if(isTouch)
         {
         for(int x = 0; x < worldMap.gridWidth;x++)
         {
             for(int y = 0; y < worldMap.gridHeight;y++)
             {
-                ItemEntity contextEntity = worldMap.grid[x][y];
+                contextEntity = worldMap.grid[x][y];
                 if(contextEntity.x == touchX || touchX > contextEntity.x && touchX < contextEntity.x + 30)
                 {
                     if(contextEntity.y == touchY || touchY > contextEntity.y && touchY < contextEntity.y + 30)
@@ -131,7 +162,11 @@ public class World
             }
         }
         }
-        return null;
+        else
+        {
+            return contextEntity;
+        }
+        return contextEntity;
     }
 
     public Tower deprecatePickTower(float touchX, float touchY)
@@ -161,66 +196,58 @@ public class World
         return result;
     }
 
-    public void menu(float touchX, float touchY, boolean tapped)
+    public void menu(float touchX, float touchY, boolean isTapped)
     {
-        if(touchX > BottomMenu.MIN_X && touchY > BottomMenu.MIN_Y)
+        if(touchY > BottomMenu.MIN_Y)
         {
-            worldMap.touched = false;
-            if(tapped)
+            if(isTapped)
             {
-            if(touchX > 0 && touchX < 52)//button 1
-            {
-                bottomMenu.selectedItem = new Square(280,595);
-                Log.d("Button 1 GROUND","Pressed");
-            }
-            else if(touchX > 53 && touchX < 106)//button 2
-            {
-                bottomMenu.selectedItem = new Wall(280,595);
-                Log.d("Button 2 WALL","Pressed");
-            }
-            else if(touchX > 107 && touchX < 160)//button 3
-            {
-                Tower towerEntity = new Tower(280,595, new FastWorker(10,10,20,1,200,null));
-                towerEntity.worker.platform = towerEntity;
-                bottomMenu.selectedItem = towerEntity;
-                Log.d("Button 3 TOWER","Pressed");
-            }
-            else if(touchX > 214 && touchX < 267)
-            {
-                enemySpawned = false;
-                Log.d("Secret Button","Pressed");
-            }
-            else if(touchX > 161 && touchX < 214)//button 4
-            {
-                if(drawingMaze)
+                if(touchX > 0 && touchX < 52)//button 1
                 {
-                    drawingMaze = false;
-                    Log.d("Drawing Maze","False");
+                    bottomMenu.selectedItem = (ItemEntity) bottomMenu.buttons.get(0).getButtonItem();
+
+                    Log.d("Button 1 GROUND","Pressed");
                 }
-                else
+                else if(touchX > 53 && touchX < 106)//button 2
                 {
-                    if(bottomMenu.selectedItem != null)
-                    {
-                        drawingMaze = true;
-                        Log.d("Drawing Maze","True");
-                    }
-                    else
+                    bottomMenu.selectedItem = (ItemEntity) bottomMenu.buttons.get(1).getButtonItem();
+
+                    Log.d("Button 2 WALL","Pressed");
+                }
+                else if(touchX > 107 && touchX < 160)//button 3
+                {
+                    bottomMenu.selectedItem = (ItemEntity) bottomMenu.buttons.get(2).getButtonItem();
+
+                    Log.d("Button 3 TOWER","Pressed ");
+                }
+                else if(touchX > 214 && touchX < 267)
+                {
+                    enemySpawned = false;
+                    Log.d("Secret Button","Pressed");
+                }
+                else if(touchX > 161 && touchX < 214)//button 4
+                {
+                    if(drawingMaze)
                     {
                         drawingMaze = false;
                         Log.d("Drawing Maze","False");
                     }
+                    else
+                    {
+                        if(bottomMenu.selectedItem != null)
+                        {
+                            drawingMaze = true;
+                            Log.d("Drawing Maze","True");
+                        }
+                        else
+                        {
+                            drawingMaze = false;
+                            Log.d("Drawing Maze","False");
+                        }
+                    }
                 }
             }
-            }
-
         }
-/*        for(int i = 0; i<towers.size();i++)
-        {
-            System.out.println("Tower " + i + "***********************************");
-            System.out.println("Tower x: " + towers.get(i).x + " ArrayX: " + towers.get(i).arrayX);
-            System.out.println("Tower Y: " + towers.get(i).y + " ArrayY: " + towers.get(i).arrayY);
-            System.out.println("Tower " + i + "***********************************");
-        }*/
     }
 
     public void dragAndDropMenuItem(float touchX, float touchY, boolean isTouch, boolean tapped)
@@ -240,7 +267,7 @@ public class World
                 {
                     bottomMenu.selectedItem.x = touchX-ItemEntity.WIDTH/2;
                     bottomMenu.selectedItem.y = touchY-ItemEntity.HEIGHT/2;
-                    highLighted = pickEntity(touchX,touchY,isTouch,tapped);
+                    highLighted = pickEntity(touchX,touchY,isTouch);
                 }
             }
             else
@@ -257,32 +284,25 @@ public class World
                     if(bottomMenu.selectedItem.type == ItemEntity.typeOfItem.Tower)
                     {
                         Tower contextTower = (Tower)bottomMenu.selectedItem;
-                        GenericWorker worker = new FastWorker(10,10,20,1,200,contextTower);
+                        GenericWorker worker;
+                        if(contextTower.worker.type == GenericWorker.workerType.Sniper)
+                        {
+                            worker = new SniperWorker(contextTower);
+                        }
+                        else
+                        {
+                            worker = new FastWorker(contextTower);
+                        }
                         worker.calibratePosition();
                         towers.add(worker);
                         //TODO: will make it so that it adds to global "tower" list better later
                     }
-                    if(worldMap.grid[contextEntity.arrayY][contextEntity.arrayY].type == ItemEntity.typeOfItem.Tower)
-                    {
-                        Tower contextItem = (Tower)worldMap.grid[contextEntity.arrayY][contextEntity.arrayY];
-                        try{
-                            towers.remove(contextItem.worker);
-                        }catch(Exception e)
-                        {
-                            Log.d("Removed of tower","in drag and drop menu failed");
-                        }
-                    }
-                    worldMap.grid[contextEntity.arrayX][contextEntity.arrayY] = bottomMenu.selectedItem;
+
+                    replaceEntity(contextEntity.arrayX,contextEntity.arrayY,bottomMenu.selectedItem);
 
                     //TODO: Just for Testing atm START
 
                     path.calculatePath(worldMap);
-
-                    //Virker ikke helt endnu.
-                    //Den starter den nye path fra det sted i path.array den var nået til i sidste path progression.
-                    //TODO: Just for Testing atm END
-
-                    Log.d(contextEntity.type + " replaced by",bottomMenu.selectedItem.type+"");
 
                     bottomMenu.selectedItem = null;
                     bottomMenu.itemTouched = false;
@@ -338,14 +358,14 @@ public class World
                     contextCustomer.pathProgression = 0;
                 }
 
-                contextCustomer.currentSpace = path.getPath().get(contextCustomer.pathProgression);
+                contextCustomer.currentSpace = path.getPath().get((int)contextCustomer.pathProgression);
 
                 contextCustomer.x = contextCustomer.currentSpace.x;
                 contextCustomer.y = contextCustomer.currentSpace.y;
                 contextCustomer.arrayX = contextCustomer.currentSpace.arrayX;
                 contextCustomer.arrayY = contextCustomer.currentSpace.arrayY;
 
-                contextCustomer.pathProgression++;
+                contextCustomer.pathProgression = contextCustomer.pathProgression + 1 + contextCustomer.getSpeed();
 
             }
             contextCustomer.viewX = contextCustomer.x;
@@ -353,7 +373,7 @@ public class World
             }
     }
 
-    public void drawMaze(float touchX, float touchY, boolean isTouch, boolean isTapped, ItemEntity itemEntity)
+    public void drawMaze(float touchX, float touchY, boolean isTouch, ItemEntity itemEntity)
     {
         if(bottomMenu.selectedItem != null)
         {
@@ -369,7 +389,7 @@ public class World
                 {
                     if(touchY < 595 && touchX >= 0 && touchY >= 0)
                     {
-                        ItemEntity pickedEntity = pickEntity(touchX,touchY,isTouch,isTapped);
+                        ItemEntity pickedEntity = pickEntity(touchX,touchY,isTouch);
                         if(pickedEntity != null&& pickedEntity.arrayX <= 20 && pickedEntity.arrayY <= 30)
                         {
                             if(!highLightedEntities.contains(pickedEntity))
@@ -385,7 +405,7 @@ public class World
             {
                 if(drawingMaze && !finishedDrawingMaze)
                 {
-                    ItemEntity contextItem = itemEntity;
+                    ItemEntity contextItem;
                     ItemEntity typeItem;
                     int highlightCount = highLightedEntities.size();
                     for(int i = 0; i < highlightCount;i++)
@@ -397,10 +417,12 @@ public class World
                         }
                         else if(itemEntity.type == ItemEntity.typeOfItem.Tower)
                         {
-                            GenericWorker worker = new FastWorker(10,10,20,1,200,null);
+                            GenericWorker worker = new FastWorker(null);
                             typeItem = new Tower(contextItem.x,contextItem.y,worker);
                             worker.platform = typeItem;
                             worker.calibratePosition();
+                            Tower contextType = (Tower) typeItem;
+                            contextType.worker = worker;
                             towers.add(worker);
                             //TODO: will make it so that it adds to global "tower" list better later
                         }
@@ -414,21 +436,7 @@ public class World
                         typeItem.arrayX = highLightedEntities.get(i).arrayX;
                         typeItem.arrayY = highLightedEntities.get(i).arrayY;
 
-                        GenericWorker cleanUpworker;
-                        int towerCount = towers.size();
-                        for(int towerIndex = 0; towerIndex < towerCount;towerIndex++)
-                        {
-                            cleanUpworker = towers.get(towerIndex);
-                            if(highLightedEntities.get(i).arrayX == cleanUpworker.arrayX &&
-                                    highLightedEntities.get(i).arrayY == cleanUpworker.arrayY)
-                            {
-                                towers.remove(towerIndex);
-                                towerCount--;
-                            }
-                        }
-
-                        worldMap.grid[highLightedEntities.get(i).arrayX][highLightedEntities.get(i).arrayY] = typeItem;
-
+                    replaceEntity(highLightedEntities.get(i).arrayX,highLightedEntities.get(i).arrayY,typeItem);
                     }
                     path.calculatePath(worldMap);
 
@@ -449,10 +457,9 @@ public class World
     public void generateEnemy()
     {
         GenericCustomer contextCustomer;
-            //enemies.add(new HighCostCustomer(100,10,3));
-            //enemies.add(new FastCustomer(100,30,1));
-            contextCustomer = new SturdyCustomer(100,10,2);
-            enemies.add(contextCustomer);
+            enemies.add(new HighCostCustomer(300,30,3));
+            enemies.add(new FastCustomer(100,50,1));
+            enemies.add(new SturdyCustomer(500,10,2));
             refreshEnemiesArray();
     }
 
@@ -491,21 +498,22 @@ public class World
 
     public void towerScanForTarget()
     {
-        GenericWorker contextWorker;
-        int towerCount = towers.size();
-        for(int i = 0; i < towerCount;i++)
+    GenericWorker contextWorker;
+    int towerCount = towers.size();
+    for(int i = 0; i < towerCount;i++)
     {
         contextWorker = towers.get(i);
 
         int centerX = (int)contextWorker.arrayX;
         int centerY = (int)contextWorker.arrayY;
         int radius = contextWorker.getRange()/worldMap.gridSize;
+        boolean targetPicked = false;
 
         if(towers.get(i).target == null)
         {
             int enemyCount = enemies.size();
-        for(int x = centerX - radius ; x < centerX + radius ; x++)
-        {
+            for(int x = centerX - radius ; x < centerX + radius ; x++)
+            {
             for(int y = centerY - radius ; y < centerY + radius ; y++)
             {
                 for(int enemyIndex = 0; enemyIndex < enemyCount;enemyIndex++)
@@ -513,17 +521,21 @@ public class World
                     if(enemies.get(enemyIndex).arrayX == x && enemies.get(enemyIndex).arrayY == y)
                     {
                         contextWorker.target = enemies.get(enemyIndex);
+                        targetPicked = true;
                     }
                 }
             }
-        }
+            }
+            if(!targetPicked)
+            {
+                contextWorker.target = null;
+            }
         }
         else
         {
-            towers.get(i).target = null;
+            contextWorker.target = null;
         }
     }
-        //System.out.println("Enemies = " + enemies.size() + " Towers = " + towers.size());
     }
 
     public void calculateTowerAction()//fine
@@ -590,22 +602,23 @@ public class World
                         contextShot.x <= contextShot.target.x + GenericCustomer.WIDTH &&
                         contextShot.y <= contextShot.target.y + GenericCustomer.HEIGHT)
                 {
-                    if(contextShot.target.getHP()- contextShot.shotFrom.getDamage() > 0)
+                    if(contextShot.target.getHP() - contextShot.shotFrom.getDamage() > 0)
                     {
+                        explosions.add(new Explosion(contextShot.x,contextShot.y));
+                        contextShot.shotFrom.target = null;
                         contextShot.target.setHP(contextShot.target.getHP()- contextShot.shotFrom.getDamage());
                         shotsFired.remove(i);
                         shotCount--;
-                        Log.d("Target","Hit!!!");
                     }
                     else
                     {
+                        explosions.add(new Explosion(contextShot.x,contextShot.y));
+
                         if(!enemies.isEmpty() && contextShot.target.getArrayIndex() < enemies.size()){
-                        Log.d("Target","Killed!!!");
                         enemies.remove(contextShot.target.getArrayIndex());
                         refreshEnemiesArray();
                         shotsFired.remove(i);
                             shotCount--;
-                        Log.d("Enemies",""+ enemies.size());
                         }
                     }
                 }
@@ -614,7 +627,6 @@ public class World
             {
                 shotsFired.remove(i);
                 shotCount--;
-                Log.d("Shot removed",""+ shotsFired.size());
                 if(enemies.isEmpty())
                 {
                     shotsFired.clear();
@@ -655,7 +667,8 @@ public class World
                         contextShots.startX = touchX;
                         contextShots.startY = touchY;
                     }
-                } else
+                }
+                else
                 {
                     contextShots.touched = false;
                 }
@@ -732,5 +745,26 @@ public class World
         }
     }
 
+    public void replaceEntity(int arrayX, int arrayY, ItemEntity item)
+    {
+        if(worldMap.grid[arrayX][arrayY].type == ItemEntity.typeOfItem.Tower)
+        {
+            GenericWorker cleanUpworker;
+            int towerCount = towers.size();
+            for(int towerIndex = 0; towerIndex < towerCount;towerIndex++)
+            {
+                cleanUpworker = towers.get(towerIndex);
+                if(arrayX == cleanUpworker.arrayX &&
+                        arrayY == cleanUpworker.arrayY)
+                {
+                    towers.remove(towerIndex);
+                    towerCount--;
+                }
+            }
+        }
 
+        Log.d(worldMap.grid[arrayX][arrayY].type + " replaced by",item.type+"");
+
+        worldMap.grid[arrayX][arrayY] = item;
+    }
 }

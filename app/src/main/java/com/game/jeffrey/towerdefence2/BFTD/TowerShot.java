@@ -23,7 +23,7 @@ public class TowerShot
     {
         this.shotFrom = shotFrom;
         this.target = target;
-        this.x = shotFrom.x;
-        this.y = shotFrom.y;
+        this.x = shotFrom.x + (GenericWorker.WIDTH/2);
+        this.y = shotFrom.y + (GenericWorker.HEIGHT/2);
     }
 }

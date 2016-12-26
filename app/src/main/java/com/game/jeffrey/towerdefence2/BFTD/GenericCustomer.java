@@ -24,8 +24,12 @@ public abstract class GenericCustomer
     public int arrayX = 0;
     public int arrayY = 0;
     public boolean spawned = false;
-    public int pathProgression = 0;
+    public float pathProgression = 0;
     public customerTypes type;
+
+    //visual test
+    public float smoothX = 0;
+    public float smoothY = 0;
 
     ItemEntity currentSpace;
 
@@ -45,8 +49,6 @@ public abstract class GenericCustomer
         this.lifeCost = lifeCost;
     }
 
-
-
     public int getArrayIndex()
     {
         return arrayIndex;
@@ -55,7 +57,6 @@ public abstract class GenericCustomer
     public void setArrayIndex(int arrayIndex)
     {
         this.arrayIndex = arrayIndex;
-
     }
 
     public int getHP()
@@ -68,9 +69,9 @@ public abstract class GenericCustomer
         this.HP = HP;
     }
 
-    public int getSpeed()
+    public float getSpeed()
     {
-        return speed;
+        return speed/30;
     }
 
     public void setSpeed(int speed)

@@ -11,25 +11,42 @@ public class WorldRenderer
 {
     GameEngine game;
     World world;
+
     Bitmap towerImage;
+    Bitmap sniperTowerImage;
     Bitmap squareGFX;
-    Bitmap bottomMenuImage;
     Bitmap wallImage;
-    Bitmap highlightImage;
     Bitmap floorImage;
-    Bitmap towerAimImage;
-    Bitmap enemyImage;
-    Bitmap standardShotImage;
+
+    Bitmap bottomMenuImage;
     Bitmap topBarImage;
+
+    Bitmap towerAimImage;
+
+    Bitmap standardShotImage;
+    Bitmap explosionImage;
+
+    Bitmap rangeImage;
+    Bitmap rangeBigImage;
+
+    Bitmap enemyImage;
+
+    Bitmap sturdyEnemyImage;
+    Bitmap fastEnemyImage;
+
+    Bitmap highlightImage;
+    Bitmap highCostEnemyImage;
+    Bitmap sniperShotImage;
+
     Typeface font;
-
-
+    
     public WorldRenderer(GameEngine game, World world)
     {
         this.game = game;
         this.world = world;
         //load bitmaps
         this.towerImage = game.loadBitmap("TowerPlatform.png");
+        this.sniperTowerImage = game.loadBitmap("TowerPlatformSniper.png");
         this.squareGFX = game.loadBitmap("square.png");
         this.bottomMenuImage = game.loadBitmap("Placeholdermenu.png");
         this.wallImage = game.loadBitmap("BFTDWall.png");
@@ -37,22 +54,26 @@ public class WorldRenderer
         this.floorImage = game.loadBitmap("floorTile.png");
         this.towerAimImage = game.loadBitmap("TowerGunPositions.png");
         this.enemyImage = game.loadBitmap("xyellowmonster.png");
+        this.sturdyEnemyImage = game.loadBitmap("sturdyEnemy.png");
+        this.fastEnemyImage = game.loadBitmap("fastEnemy.png");
+        this.highCostEnemyImage= game.loadBitmap("highCostEnemy.png");
         this.standardShotImage = game.loadBitmap("gunfire.png");
+        this.explosionImage = game.loadBitmap("explosion.png");
         this.font = game.loadFont("font.ttf");
         this.topBarImage = game.loadBitmap("Topbar.png");
+        this.rangeImage = game.loadBitmap("ranges.png");
+        this.rangeBigImage = game.loadBitmap("rangesBig.png");
+        this.sniperShotImage = game.loadBitmap("sniperFire.png");
+
     }
 
     public void render()
     {
         //first
         game.clearFramebuffer(Color.rgb(0,0,0));
-
         //second
         renderWorld();
         //third
-        renderTopBar();
-
-        renderBottomMenu();
 
         renderDraggedItem();
 
@@ -60,6 +81,9 @@ public class WorldRenderer
 
         renderShots();
 
+        renderTopBar();
+
+        renderBottomMenu();
         game.drawText(font, "FPS: " + game.getFramesPerSecond(), 24, 13, Color.RED, 10);
         game.drawText(font, "Enemies: " + world.enemies.size(), 124, 13, Color.RED, 10);
         game.drawText(font, "Shots: " + world.shotsFired.size(), 224, 13, Color.RED, 10);
@@ -100,23 +124,23 @@ public class WorldRenderer
 
                 if(itemContext.type == ItemEntity.typeOfItem.Tower)
                 {
-                    renderTower(imagePosX,imagePosY);
+                    renderTower(imagePosX,imagePosY,x,y);
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.Wall)
                 {
-                    renderWall(imagePosX,imagePosY);
+                    drawWall(imagePosX,imagePosY);
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.Employee)
                 {
-                    renderGround(imagePosX,imagePosY);
+                    drawGround(imagePosX,imagePosY);
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.Ground)
                 {
-                    renderGround(imagePosX,imagePosY);
+                    drawGround(imagePosX,imagePosY);
                 }
                 else if(itemContext.type == ItemEntity.typeOfItem.StartPoint ||
                         itemContext.type == ItemEntity.typeOfItem.GoalPoint) {
-                    renderPoints(imagePosX, imagePosY);
+                    drawPoints(imagePosX, imagePosY);
                 }
 
 
@@ -156,6 +180,8 @@ public class WorldRenderer
     public void renderBottomMenu()
     {
         game.drawBitmap(bottomMenuImage, (int)BottomMenu.MIN_X,(int)BottomMenu.MIN_Y);
+        int buttonItems = world.bottomMenu.buttons.size();
+
         if(world.bottomMenu.selectedItem != null && !world.bottomMenu.itemTouched)
         {
             int itemHolderX = 280;
@@ -164,7 +190,15 @@ public class WorldRenderer
 
             if(contextItem.type == ItemEntity.typeOfItem.Tower)
             {
-                game.drawBitmap(towerImage,itemHolderX,itemHolderY);
+                Tower contextTower = (Tower)contextItem;
+                if(contextTower.worker.type == GenericWorker.workerType.Sniper)
+                {
+                    game.drawBitmap(sniperTowerImage,itemHolderX,itemHolderY);
+                }
+                else
+                {
+                    game.drawBitmap(towerImage,itemHolderX,itemHolderY);
+                }
             }
             else if(contextItem.type == ItemEntity.typeOfItem.Wall)
             {
@@ -177,12 +211,18 @@ public class WorldRenderer
         }
         if(world.drawingMaze)
         {
-            game.drawBitmap(highlightImage,175,(int)BottomMenu.MIN_Y);
-            game.drawBitmap(highlightImage,153,(int)BottomMenu.MIN_Y);
-            game.drawBitmap(highlightImage,175,(int)BottomMenu.MIN_Y + 30);
-            game.drawBitmap(highlightImage,153,(int)BottomMenu.MIN_Y + 30);
+            drawPoints(175,(int)BottomMenu.MIN_Y);
+            drawPoints(175,(int)BottomMenu.MIN_Y + 30);
+            drawPoints(153,(int)BottomMenu.MIN_Y);
+            drawPoints(153,(int)BottomMenu.MIN_Y + 30);
         }
-
+        if(!world.enemySpawned)
+        {
+            game.drawBitmap(enemyImage,245,(int)BottomMenu.MIN_Y);
+            game.drawBitmap(highCostEnemyImage,210,(int)BottomMenu.MIN_Y);
+            game.drawBitmap(fastEnemyImage,245,(int)BottomMenu.MIN_Y + 30);
+            game.drawBitmap(sturdyEnemyImage,210,(int)BottomMenu.MIN_Y + 30);
+        }
     }
     public void renderDraggedItem()
     {
@@ -192,37 +232,67 @@ public class WorldRenderer
 
             if(contextItem.type == ItemEntity.typeOfItem.Tower)
             {
-                game.drawBitmap(towerImage,(int)contextItem.x,(int)contextItem.y);
+                Tower contextTower = (Tower)contextItem;
+                if(contextTower.worker.type == GenericWorker.workerType.Sniper)
+                {
+                    game.drawBitmap(sniperTowerImage,(int)contextItem.x,(int)contextItem.y);
+                }
+                else
+                {
+                    game.drawBitmap(towerImage,(int)contextItem.x,(int)contextItem.y);
+                }
             }
             else if(contextItem.type == ItemEntity.typeOfItem.Wall)
             {
                 game.drawBitmap(wallImage,(int)contextItem.x,(int)contextItem.y);
             }
+
+            if(contextItem.type == ItemEntity.typeOfItem.Tower && world.highLighted != null)
+            {
+                Tower contextTower = (Tower)contextItem;
+                /*if(contextTower.worker.getRange() == 50)
+                {
+                }*/
+                int range = contextTower.worker.getRange();
+                int imagePosX = (int)(world.highLighted.x - range/2 + (Tower.WIDTH/2));
+                int imagePosY = (int)(world.highLighted.y - range/2 + (Tower.HEIGHT/2));
+                drawRange(imagePosX,imagePosY,range);
+            }
         }
     }
-    public void renderTower(int x, int y)
+    public void renderTower(int x, int y, int arrayX, int arrayY)
     {
-        game.drawBitmap(towerImage,x,y,0,0,30,30);
-
         int pictureSpaceX = 0;
         int pictureSpaceY = 0;
 
-        if (world.aimRotation >= 270 && world.aimRotation < 360)
+        Tower contextTower =  (Tower)world.worldMap.grid[arrayX][arrayY];
+
+
+        if(contextTower.worker.type == GenericWorker.workerType.Sniper)
+        {
+            game.drawBitmap(sniperTowerImage,x,y,0,0,30,30);
+        }
+        else
+        {
+            game.drawBitmap(towerImage,x,y,0,0,30,30);
+        }
+
+        if (contextTower.aimRotation >= 270 && contextTower.aimRotation < 360)
         {
             pictureSpaceY = 90;
             //System.out.println("UP " + pictureSpaceY);
         }
-        else if(world.aimRotation >= 180 && world.aimRotation < 270)
+        else if(contextTower.aimRotation >= 180 && contextTower.aimRotation < 270)
         {
             pictureSpaceY = 60;
             //System.out.println("RIGHT " + pictureSpaceY);
         }
-        else if(world.aimRotation >= 90 && world.aimRotation < 180)
+        else if(contextTower.aimRotation >= 90 && contextTower.aimRotation < 180)
         {
             pictureSpaceY = 0;
             //System.out.println("DOWN " + pictureSpaceY);
         }
-        else if(world.aimRotation >= 0 && world.aimRotation < 90)
+        else if(contextTower.aimRotation >= 0 && contextTower.aimRotation < 90)
         {
             pictureSpaceY = 30;
             //System.out.println("LEFT " + pictureSpaceY);
@@ -231,18 +301,17 @@ public class WorldRenderer
         game.drawBitmap(towerAimImage,x,y,pictureSpaceX,pictureSpaceY,30,30);
 
     }
-    public void renderWall(int x, int y)
+    public void drawWall(int x, int y)
     {
         game.drawBitmap(wallImage,x,y,0,0,30,30);
     }
-    public void renderGround(int x, int y)
+    public void drawGround(int x, int y)
     {
         game.drawBitmap(floorImage,x,y,0,0,30,30);
     }
-    public void renderPoints(int x, int y) {
+    public void drawPoints(int x, int y) {
         game.drawBitmap(highlightImage, x, y, 0, 0, 30, 30);
     }
-
     public void renderEnemy()
     {
         GenericCustomer contextCustomer;
@@ -251,15 +320,62 @@ public class WorldRenderer
         contextCustomer = world.enemies.get(i);
         //if the thing is spawned AND it is on screen
         if(contextCustomer.spawned &&
-                contextCustomer.x >= 0 &&
-                contextCustomer.y >= 0 &&
+                contextCustomer.x >= -30 &&
+                contextCustomer.y >= -30 &&
                 contextCustomer.x <= World.MAX_X  &&
                 contextCustomer.y <= World.MAX_Y - 70)
         {
-            int imagePosX = (int)(contextCustomer.x);
-            int imagePosY = (int)(contextCustomer.y);
 
-            drawGenericEnemy(imagePosX,imagePosY);
+            int contextPathProg = 0;
+            if(world.path.getPath().size() > (int)contextCustomer.pathProgression + 1)
+            {
+                contextPathProg = (int)contextCustomer.pathProgression;
+            }
+            ItemEntity nextStep;
+
+            if(contextPathProg != 0 && !(world.path.getPath().isEmpty()) &&
+                    world.path.getPath().get(contextPathProg) != null)
+            {
+                nextStep = world.path.getPath().get(contextPathProg);
+
+                if(nextStep.x > contextCustomer.x)
+                {
+                    world.enemies.get(i).viewX = world.enemies.get(i).viewX + (2*world.enemies.get(i).getSpeed());
+                }
+                else if(nextStep.x < contextCustomer.x)
+                {
+                    world.enemies.get(i).viewX = world.enemies.get(i).viewX - (2*world.enemies.get(i).getSpeed());
+                }
+
+                if(nextStep.y > contextCustomer.y)
+                {
+                    world.enemies.get(i).viewY = world.enemies.get(i).viewY + (2*world.enemies.get(i).getSpeed());
+                }
+                else if(nextStep.y < contextCustomer.y)
+                {
+                    world.enemies.get(i).viewY = world.enemies.get(i).viewY - (2*world.enemies.get(i).getSpeed());
+                }
+            }
+
+            int imagePosX = (int)(contextCustomer.viewX);
+            int imagePosY = (int)(contextCustomer.viewY);
+
+            if(contextCustomer.type == GenericCustomer.customerTypes.Sturdy)
+            {
+                drawSturdyEnemy(imagePosX,imagePosY);
+            }
+            else if(contextCustomer.type == GenericCustomer.customerTypes.HighCost)
+            {
+                drawHighCostEnemy(imagePosX,imagePosY);
+            }
+            else if(contextCustomer.type == GenericCustomer.customerTypes.Fast)
+            {
+                drawFastEnemy(imagePosX,imagePosY);
+            }
+            else
+            {
+                drawGenericEnemy(imagePosX,imagePosY);
+            }
 
             contextCustomer.x = contextCustomer.viewX - contextCustomer.currentSpace.arrayX / 30;
             contextCustomer.y = contextCustomer.viewY - contextCustomer.currentSpace.arrayY / 30;
@@ -277,7 +393,8 @@ public class WorldRenderer
     public void renderShots()
     {
         TowerShot contextShot;
-        for(int i = 0; i < world.shotsFired.size();i++)
+        int shotsFired = world.shotsFired.size();
+        for(int i = 0; i < shotsFired ;i++)
         {
             contextShot = world.shotsFired.get(i);
             //if the thing is spawned AND it is on screen
@@ -289,10 +406,26 @@ public class WorldRenderer
                 int imagePosX = (int)(contextShot.x);
                 int imagePosY = (int)(contextShot.y);
 
-                drawTowerShot(imagePosX,imagePosY);
+                drawTowerShot(imagePosX,imagePosY,contextShot.shotFrom.type);
 
                 contextShot.x = contextShot.viewX - contextShot.target.arrayX/30;
                 contextShot.y = contextShot.viewY - contextShot.target.arrayY/30;
+            }
+        }
+        int explosionCount = world.explosions.size();
+        Explosion contextExplosion;
+        for(int y = 0; y < explosionCount;y++)
+        {
+            contextExplosion = world.explosions.get(y);
+            if(contextExplosion.explosionAnimation>0)
+            {
+                drawExplosion((int)contextExplosion.x,(int)contextExplosion.y);
+                contextExplosion.explosionAnimation--;
+            }
+            else
+            {
+                world.explosions.remove(contextExplosion);
+                explosionCount--;
             }
         }
     }
@@ -300,8 +433,47 @@ public class WorldRenderer
     {
         game.drawBitmap(enemyImage,x,y);
     }
-    public void drawTowerShot(int x, int y)
+    public void drawTowerShot(int x, int y,GenericWorker.workerType type)
     {
-        game.drawBitmap(standardShotImage,x,y);
+        if(type == GenericWorker.workerType.Sniper)
+        {
+            game.drawBitmap(sniperShotImage,x-3,y-2);
+        }
+        else
+        {
+            game.drawBitmap(standardShotImage,x,y);
+
+        }
+    }
+    public void drawExplosion(int x, int y)
+    {
+        game.drawBitmap(explosionImage,x,y);
+    }
+    public void drawRange(int x, int y , int range)
+    {
+        if(range > 150)
+        {
+            game.drawBitmap(rangeBigImage,x,y);
+        }
+        else
+        {
+            game.drawBitmap(rangeImage,x, y,0,0,range + 5,range + 5);
+        }
+    }
+    public void drawSquare(int x, int y)
+    {
+        game.drawBitmap(squareGFX,x,y);
+    }
+    public void drawHighCostEnemy(int x, int y)
+    {
+        game.drawBitmap(highCostEnemyImage,x,y);
+    }
+    public void drawFastEnemy(int x, int y)
+    {
+        game.drawBitmap(fastEnemyImage,x,y);
+    }
+    public void drawSturdyEnemy(int x, int y)
+    {
+        game.drawBitmap(sturdyEnemyImage,x,y);
     }
 }

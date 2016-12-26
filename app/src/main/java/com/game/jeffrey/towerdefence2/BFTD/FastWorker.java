@@ -6,9 +6,14 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 public class FastWorker extends GenericWorker
 {
-    public FastWorker(int damage, int stamina, int attackSpeed, int level, int range,ItemEntity platform)
+    public FastWorker(int damage, int stamina, int attackSpeed, int level, int range, ItemEntity platform)
     {
         super(damage, stamina, attackSpeed, level, range, platform);
+        super.type = workerType.Fast;
+    }
+    public FastWorker(ItemEntity platform)
+    {
+        super(10,10,20,1,100, platform);
         super.type = workerType.Fast;
     }
 }

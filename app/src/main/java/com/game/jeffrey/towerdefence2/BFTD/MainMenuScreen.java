@@ -2,6 +2,7 @@ package com.game.jeffrey.towerdefence2.BFTD;
 
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.util.Log;
 
 import com.game.jeffrey.towerdefence2.GameEngine;
@@ -12,12 +13,14 @@ public class MainMenuScreen extends Screen
     Bitmap mainmenu;
     float startTime = System.nanoTime();
     float passedTime = 0.0f;
+    Typeface font;
+
 
     public MainMenuScreen(GameEngine game)
     {
         super(game);
-        mainmenu = game.loadBitmap("blackfriday.png");
-
+        this.font = game.loadFont("font.ttf");
+        this.mainmenu = game.loadBitmap("blackfriday.png");
     }
 
     @Override
@@ -27,8 +30,11 @@ public class MainMenuScreen extends Screen
         {
             Log.d("mms", "click");
             game.setScreen(new GameScreen(game));
+
             return;
         }
+
+
         passedTime = passedTime + deltaTime;
         game.drawBitmap(mainmenu,0,0);
     }
